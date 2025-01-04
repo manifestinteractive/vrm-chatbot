@@ -67,6 +67,8 @@ import { AmicaLifePage } from "./settings/AmicaLifePage";
 import { useVrmStoreContext } from "@/features/vrmStore/vrmStoreContext";
 import { OpenRouterSettings } from "./settings/OpenRouterSettingsPage";
 
+import { PersonaPage } from './settings/PersonaPage';
+
 export const Settings = ({
   onClickClose,
 }: {
@@ -143,7 +145,7 @@ export const Settings = ({
   const [sttBackend, setSTTBackend] = useState(config("stt_backend"));
   const [sttWakeWordEnabled, setSTTWakeWordEnabled] = useState<boolean>(config("wake_word_enabled") === 'true' ? true : false);
   const [sttWakeWord, setSTTWakeWord] = useState(config("wake_word"));
-  
+
   const [whisperOpenAIUrl, setWhisperOpenAIUrl] = useState(config("openai_whisper_url"));
   const [whisperOpenAIApiKey, setWhisperOpenAIApiKey] = useState(config("openai_whisper_apikey"));
   const [whisperOpenAIModel, setWhisperOpenAIModel] = useState(config("openai_whisper_model"));
@@ -158,6 +160,12 @@ export const Settings = ({
 
   const [name, setName] = useState(config("name"));
   const [systemPrompt, setSystemPrompt] = useState(buildSystemPrompt());
+
+  const [personaName, setPersonaName] = useState(config("persona_name"));
+  const [personaPersonalityCode, setPersonaPersonalityCode] = useState(config("persona_personality_code"));
+  const [personaLikes, setPersonaLikes] = useState(config("persona_likes"));
+  const [personaDislikes, setPersonaDislikes] = useState(config("persona_dislikes"));
+  const [personaBio, setPersonaBio] = useState(config("persona_bio"));
 
   const vrmFileInputRef = useRef<HTMLInputElement>(null);
   const handleClickOpenVrmFile = useCallback(() => {
@@ -280,7 +288,7 @@ export const Settings = ({
     case 'main_menu':
       return <MenuPage
         // keys={["appearance",  "amica_life", "chatbot", "tts", "stt", "vision", "reset_settings", "community"]}
-        keys={["appearance", "amica_life", "chatbot", "tts", "stt", "reset_settings"]}
+        keys={["appearance", "persona", "amica_life", "chatbot", "tts", "stt", "reset_settings"]}
         menuClick={handleMenuClick} />;
 
     case 'appearance':
@@ -467,7 +475,7 @@ export const Settings = ({
         setPiperUrl={setPiperUrl}
         setSettingsUpdated={setSettingsUpdated}
         />
-    
+
     case 'coquiLocal_settings':
       return <CoquiLocalSettingsPage
         coquiLocalUrl={coquiLocalUrl}
@@ -611,6 +619,21 @@ export const Settings = ({
         setMaxTimeInterval={setMaxTimeInterval}
         setTimeToSleep={setTimeToSleep}
         setIdleTextPrompt={setIdleTextPrompt}
+        setSettingsUpdated={setSettingsUpdated}
+        />
+
+    case 'persona':
+      return <PersonaPage
+        personaBio={personaBio}
+        personaDislikes={personaDislikes}
+        personaLikes={personaLikes}
+        personaName={personaName}
+        personaPersonalityCode={personaPersonalityCode}
+        setPersonaBio={setPersonaBio}
+        setPersonaDislikes={setPersonaDislikes}
+        setPersonaLikes={setPersonaLikes}
+        setPersonaName={setPersonaName}
+        setPersonaPersonalityCode={setPersonaPersonalityCode}
         setSettingsUpdated={setSettingsUpdated}
         />
 

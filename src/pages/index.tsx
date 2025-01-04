@@ -121,27 +121,27 @@ export default function Home() {
   }
 
   const toggleState = (
-    setFunc: React.Dispatch<React.SetStateAction<boolean>>, 
+    setFunc: React.Dispatch<React.SetStateAction<boolean>>,
     deps: React.Dispatch<React.SetStateAction<boolean>>[],
   ) => {
     setFunc(prev => {
       if (!prev) {
         deps.forEach(dep => dep(false));
-      } 
+      }
       return !prev;
     });
   };
-  
+
   const toggleChatLog = () => {
     toggleState(setShowChatLog, [setShowSubconciousText, setShowChatMode]);
   };
-  
+
   const toggleSubconciousText = () => {
     if (subconciousLogs.length !== 0) {
       toggleState(setShowSubconciousText, [setShowChatLog, setShowChatMode]);
     }
   };
-  
+
   const toggleChatMode = () => {
     toggleState(setShowChatMode, [setShowChatLog, setShowSubconciousText]);
   };
@@ -208,8 +208,8 @@ export default function Home() {
           />
         )}
       </VrmStoreProvider>
-      
-      <MessageInputContainer isChatProcessing={chatProcessing} />
+
+      {!showSettings && !showDebug && (<MessageInputContainer isChatProcessing={chatProcessing} />)}
 
       {/* main menu */}
       <Menu as="div">
@@ -381,7 +381,7 @@ export default function Home() {
                         aria-hidden="true"
                         onClick={() => setShowDebug(true)}
                       />
-                      <span className="text-white hidden">Debug</span> 
+                      <span className="text-white hidden">Debug</span>
                   </div>
 
                   <div className="flex flex-row items-center space-x-2">
@@ -391,9 +391,9 @@ export default function Home() {
                         onChange={toggleChatMode}
                       />
                   </div>
-                  
+
                 </div>
-              </div>    
+              </div>
             </div>
           </Menu.Items>
         </Transition>

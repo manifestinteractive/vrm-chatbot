@@ -22,6 +22,7 @@ import {
   MoonIcon,
   SunIcon,
   CogIcon,
+  UserIcon
 } from '@heroicons/react/24/outline';
 
 export function basicPage(
@@ -71,7 +72,7 @@ export function FormRow({label, children}: {
   children: React.ReactNode;
 }) {
   return (
-    <div className="sm:col-span-3 max-w-xs rounded-xl">
+    <div className="sm:col-span-3 rounded-xl">
       <label className="block text-sm font-medium leading-6 text-gray-900">
         {label}
       </label>
@@ -141,6 +142,7 @@ export function getIconFromPage(page: string): JSX.Element {
     case 'vision':              return <EyeIcon className="h-5 w-5 flex-none text-gray-800" aria-hidden="true" />;
     case 'reset_settings':      return <PowerIcon className="h-5 w-5 flex-none text-red-500" aria-hidden="true" />;
     case 'community':           return <RocketLaunchIcon className="h-5 w-5 flex-none text-gray-800" aria-hidden="true" />;
+    case 'persona':             return <UserIcon className="h-5 w-5 flex-none text-gray-800" aria-hidden="true" />;
 
     case 'background_img':      return <PhotoIcon className="h-5 w-5 flex-none text-gray-800" aria-hidden="true" />;
     case 'background_color':    return <SwatchIcon className="h-5 w-5 flex-none text-gray-800" aria-hidden="true" />;
@@ -191,6 +193,7 @@ function getLabelFromPage(page: string): string {
     case 'vision':              return t('Vision');
     case 'reset_settings':      return t('Reset Settings');
     case 'community':           return t('Community');
+    case 'persona':             return t('Persona');
 
     case 'background_img':      return t('Background Image');
     case 'background_color':    return t('Background Color');
