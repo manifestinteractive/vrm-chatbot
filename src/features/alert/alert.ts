@@ -3,7 +3,7 @@ export type Notification = {
   type: NotificationType;
   title: string;
   message: string;
-}
+};
 
 export class Alert {
   public notifications: Notification[] = [];

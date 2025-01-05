@@ -1,4 +1,4 @@
-import { buildUrl } from "@/utils/buildUrl";
+import { buildUrl } from '@/utils/buildUrl';
 
 export const GitHubLink = () => {
   return (
@@ -13,7 +13,7 @@ export const GitHubLink = () => {
           alt="https://github.com/semperai/amica"
           height={24}
           width={24}
-          src={buildUrl("/github-mark-white.svg")}
+          src={buildUrl('/github-mark-white.svg')}
         ></img>
         <div className="mx-2 text-white font-bold">Open Source</div>
       </div>

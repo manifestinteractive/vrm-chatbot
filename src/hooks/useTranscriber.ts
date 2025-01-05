@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useState } from "react";
-import { useWorker } from "./useWorker";
-import { updateFileProgress } from "@/utils/progress";
+import { useCallback, useMemo, useState } from 'react';
+import { useWorker } from './useWorker';
+import { updateFileProgress } from '@/utils/progress';
 
 interface ProgressItem {
   file: string;
@@ -12,10 +12,7 @@ interface ProgressItem {
 }
 
 interface TranscriberUpdateData {
-  data: [
-    string,
-    { chunks: { text: string; timestamp: [number, number | null] }[] },
-  ];
+  data: [string, { chunks: { text: string; timestamp: [number, number | null] }[] }];
   text: string;
 }
 
@@ -41,21 +38,19 @@ export interface Transcriber {
 }
 
 export function useTranscriber(): Transcriber {
-  const [transcript, setTranscript] = useState<TranscriberData | undefined>(
-    undefined,
-  );
+  const [transcript, setTranscript] = useState<TranscriberData | undefined>(undefined);
   const [isBusy, setIsBusy] = useState(false);
   const [isModelLoading, setIsModelLoading] = useState(false);
 
-  const webWorker = useWorker("whisper", (event) => {
+  const webWorker = useWorker('whisper', (event) => {
     const message = event.data;
     // Update the state with the result
     switch (message.status) {
-      case "progress":
+      case 'progress':
         // Model file progress: update one of the progress items.
         updateFileProgress(message.file, message.progress);
         break;
-      case "update":
+      case 'update':
         // Received partial update
         // console.log("update", message);
         // eslint-disable-next-line no-case-declarations
@@ -66,9 +61,9 @@ export function useTranscriber(): Transcriber {
           chunks: updateMessage.data[1].chunks,
         });
         break;
-      case "complete":
+      case 'complete':
         // Received complete transcript
-        console.log("useTranscriber complete", message);
+        console.log('useTranscriber complete', message);
         // eslint-disable-next-line no-case-declarations
         const completeMessage = message as TranscriberCompleteData;
         setTranscript({
@@ -79,20 +74,20 @@ export function useTranscriber(): Transcriber {
         setIsBusy(false);
         break;
 
-      case "initiate":
+      case 'initiate':
         // Model file start load: add a new progress item to the list.
         setIsModelLoading(true);
         break;
-      case "ready":
+      case 'ready':
         setIsModelLoading(false);
         break;
-      case "error":
+      case 'error':
         setIsBusy(false);
         alert(
           `${message.data.message} This is most likely because you are using Safari on an M1/M2 Mac. Please try again from Chrome, Firefox, or Edge.\n\nIf this is not the case, please file a bug report.`,
         );
         break;
-      case "done":
+      case 'done':
         // Model file loaded: remove the progress item from the list.
         updateFileProgress(message.file, 100);
         break;
@@ -122,7 +117,7 @@ export function useTranscriber(): Transcriber {
 
           audio = new Float32Array(left.length);
           for (let i = 0; i < audioData.length; ++i) {
-              audio[i] = SCALING_FACTOR * (left[i] + right[i]) / 2;
+            audio[i] = (SCALING_FACTOR * (left[i] + right[i])) / 2;
           }
         } else {
           // If the audio is not stereo, we can just use the first channel:
@@ -145,12 +140,7 @@ export function useTranscriber(): Transcriber {
       start: postRequest,
       output: transcript,
     };
-  }, [
-    isBusy,
-    isModelLoading,
-    postRequest,
-    transcript,
-  ]);
+  }, [isBusy, isModelLoading, postRequest, transcript]);
 
   return transcriber;
 }

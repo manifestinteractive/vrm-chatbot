@@ -1,8 +1,7 @@
 import { BasicPage, FormRow, NotUsingAlert } from './common';
 import { TextInput } from '@/components/textInput';
 import { SecretTextInput } from '@/components/secretTextInput';
-import { config, updateConfig } from "@/utils/config";
-
+import { config, updateConfig } from '@/utils/config';
 
 export function OpenRouterSettings({
   openRouterApiKey,
@@ -21,18 +20,21 @@ export function OpenRouterSettings({
   setOpenRouterModel: (model: string) => void;
   setSettingsUpdated: (updated: boolean) => void;
 }) {
-  const description = <>Configure OpenRouter settings. You can get an API key from <a href="https://openrouter.ai">https://openrouter.ai</a></>;
+  const description = (
+    <>
+      Configure OpenRouter settings. You can get an API key from{' '}
+      <a href="https://openrouter.ai">https://openrouter.ai</a>
+    </>
+  );
 
   return (
-    <BasicPage
-      title="OpenRouter Settings"
-      description={description}
-    >
-      { config("chatbot_backend") !== "openrouter" && (
+    <BasicPage title="OpenRouter Settings" description={description}>
+      {config('chatbot_backend') !== 'openrouter' && (
         <NotUsingAlert>
-          You are not currently using OpenRouter as your ChatBot backend. These settings will not be used.
+          You are not currently using OpenRouter as your ChatBot backend. These settings
+          will not be used.
         </NotUsingAlert>
-      ) }
+      )}
       <ul role="list" className="divide-y divide-gray-100 max-w-xs">
         <li className="py-4">
           <FormRow label="OpenRouter API Key">
@@ -40,7 +42,7 @@ export function OpenRouterSettings({
               value={openRouterApiKey}
               onChange={(event: React.ChangeEvent<any>) => {
                 setOpenRouterApiKey(event.target.value);
-                updateConfig("openrouter_apikey", event.target.value);
+                updateConfig('openrouter_apikey', event.target.value);
                 setSettingsUpdated(true);
               }}
             />
@@ -52,7 +54,7 @@ export function OpenRouterSettings({
               value={openRouterUrl}
               onChange={(event: React.ChangeEvent<any>) => {
                 setOpenRouterUrl(event.target.value);
-                updateConfig("openrouter_url", event.target.value);
+                updateConfig('openrouter_url', event.target.value);
                 setSettingsUpdated(true);
               }}
             />
@@ -64,7 +66,7 @@ export function OpenRouterSettings({
               value={openRouterModel}
               onChange={(event: React.ChangeEvent<any>) => {
                 setOpenRouterModel(event.target.value);
-                updateConfig("openrouter_model", event.target.value);
+                updateConfig('openrouter_model', event.target.value);
                 setSettingsUpdated(true);
               }}
             />

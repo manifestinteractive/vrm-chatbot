@@ -5,7 +5,7 @@ interface FlexTextareaProps {
   onChange?: (value: string) => void;
 }
 
-const FlexTextarea: React.FC<FlexTextareaProps> = ({ value = "", onChange }) => {
+const FlexTextarea: React.FC<FlexTextareaProps> = ({ value = '', onChange }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const dummyRef = useRef<HTMLDivElement>(null);
 
@@ -49,7 +49,7 @@ const FlexTextarea: React.FC<FlexTextareaProps> = ({ value = "", onChange }) => 
       return () => {
         textarea.removeEventListener('input', handleInput);
         textarea.removeEventListener('compositionend', handleCompositionEnd);
-      }
+      };
     }
   }, []);
 
@@ -68,6 +68,6 @@ const FlexTextarea: React.FC<FlexTextareaProps> = ({ value = "", onChange }) => 
       <textarea className={styles.FlexTextarea__textarea} ref={textareaRef}></textarea>
     </div>
   );
-}
+};
 
 export default FlexTextarea;

@@ -1,5 +1,5 @@
-import { Fragment, useContext, useEffect, useState } from 'react'
-import { Transition } from '@headlessui/react'
+import { Fragment, useContext, useEffect, useState } from 'react';
+import { Transition } from '@headlessui/react';
 import {
   XMarkIcon,
   ExclamationCircleIcon,
@@ -10,9 +10,10 @@ import { Notification, NotificationType } from '@/features/alert/alert';
 
 export function Alert() {
   const { alert } = useContext(AlertContext);
-  const [shownNotification, setShownNotification] = useState<Notification|null>(null);
+  const [shownNotification, setShownNotification] = useState<Notification | null>(null);
   // this is so we dont get flicker when the notification changes type
-  const [shownNotificationType, setShownNotificationType] = useState<NotificationType>('error');
+  const [shownNotificationType, setShownNotificationType] =
+    useState<NotificationType>('error');
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -47,22 +48,32 @@ export function Alert() {
             <div className="p-4">
               <div className="flex items-start">
                 <div className="flex-shrink-0">
-                  { shownNotificationType === 'error' ? (
-                    <ExclamationCircleIcon className="h-6 w-6 text-red-400" aria-hidden="true" />
+                  {shownNotificationType === 'error' ? (
+                    <ExclamationCircleIcon
+                      className="h-6 w-6 text-red-400"
+                      aria-hidden="true"
+                    />
                   ) : (
-                    <CheckCircleIcon className="h-6 w-6 text-green-400" aria-hidden="true" />
+                    <CheckCircleIcon
+                      className="h-6 w-6 text-green-400"
+                      aria-hidden="true"
+                    />
                   )}
                 </div>
                 <div className="ml-3 w-0 flex-1 pt-0.5">
-                  <p className="text-sm font-medium text-gray-900">{shownNotification?.title}</p>
-                  <p className="mt-1 text-sm text-gray-500">{shownNotification?.message}</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    {shownNotification?.title}
+                  </p>
+                  <p className="mt-1 text-sm text-gray-500">
+                    {shownNotification?.message}
+                  </p>
                 </div>
                 <div className="ml-4 flex flex-shrink-0">
                   <button
                     type="button"
                     className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     onClick={() => {
-                      setShownNotification(null)
+                      setShownNotification(null);
                     }}
                   >
                     <span className="sr-only">Close</span>

@@ -4,14 +4,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { updateConfig, defaultConfig } from '@/utils/config';
 import { isTauri } from '@/utils/isTauri';
-import VrmDemo from "@/components/vrmDemo";
+import VrmDemo from '@/components/vrmDemo';
 import { supabase } from '@/utils/supabase';
 import { vrmDataProvider } from '@/features/vrmStore/vrmDataProvider';
 import { BlobToBase64 } from '@/utils/blobDataUtils';
 
 export default function Import() {
   const { t } = useTranslation();
-  const router = useRouter()
+  const router = useRouter();
 
   const [description, setDescription] = useState('');
   const [name, setName] = useState('');
@@ -38,11 +38,13 @@ export default function Import() {
     async function getCharacter() {
       const { data, error } = await supabase
         .from('characters')
-        .select(`description, name, system_prompt, vision_system_prompt, bg_url, youtube_videoid, vrm_url, animation_url, voice_url`)
+        .select(
+          `description, name, system_prompt, vision_system_prompt, bg_url, youtube_videoid, vrm_url, animation_url, voice_url`,
+        )
         .eq('sqid', router.query.sqid)
         .single();
 
-      if (error || ! data) {
+      if (error || !data) {
         setError(true);
         return;
       }
@@ -78,7 +80,6 @@ export default function Import() {
     }
   }, [router]);
 
-
   function overrideConfig() {
     if (name) {
       updateConfig('name', name as string);
@@ -113,7 +114,7 @@ export default function Import() {
     if (vrmUrl) {
       updateConfig('vrm_url', vrmUrl as string);
       updateConfig('vrm_save_type', 'web');
-      vrmDataProvider.addItem(vrmUrl, 'web', "", vrmUrl, thumbData);
+      vrmDataProvider.addItem(vrmUrl, 'web', '', vrmUrl, thumbData);
     } else {
       updateConfig('vrm_url', defaultConfig('vrm_url'));
     }
@@ -136,24 +137,25 @@ export default function Import() {
       <div className="sm:col-span-3 max-w-md rounded-xl mt-4">
         {error && (
           <div>
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-              <strong className="font-bold">{t("Error!")}</strong>
-              {' '}
-              <span className="block sm:inline">{t("Something went wrong.")}</span>
+            <div
+              className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+              role="alert"
+            >
+              <strong className="font-bold">{t('Error!')}</strong>{' '}
+              <span className="block sm:inline">{t('Something went wrong.')}</span>
             </div>
             <p className="mt-8">
-              {t("Try again later.")}
-              {' '}
-              <Link href="/" className="text-cyan-500">{t("Click here")}</Link>
-              {' '}
-              {t("to return to homepage.")}
+              {t('Try again later.')}{' '}
+              <Link href="/" className="text-cyan-500">
+                {t('Click here')}
+              </Link>{' '}
+              {t('to return to homepage.')}
             </p>
-
           </div>
         )}
-        {! error && loaded && (
+        {!error && loaded && (
           <h1 className="text-lg">
-            {t("Import")} {loaded ? (`“${name}”` || 'Amica') : '...'}
+            {t('Import')} {loaded ? `“${name}”` || 'Amica' : '...'}
           </h1>
         )}
       </div>
@@ -161,12 +163,11 @@ export default function Import() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <div className="sm:col-span-3 max-w-md rounded-xl mt-4 bg-gray-100">
-            { loaded && (
+            {loaded && (
               <VrmDemo
                 vrmUrl={vrmUrl}
                 onScreenShot={async (blob: Blob | null) => {
-                  if (blob)
-                    return BlobToBase64(blob).then(data => setThumbData(data));
+                  if (blob) return BlobToBase64(blob).then((data) => setThumbData(data));
                 }}
                 onLoaded={() => setVrmLoaded(true)}
               />
@@ -178,29 +179,26 @@ export default function Import() {
                 <div className="sm:col-span-3 max-w-md rounded-xl mt-2">
                   <button
                     onClick={async () => {
-                      await 
-                      overrideConfig();
+                      await overrideConfig();
                       window.location.href = '/';
                       setButtonDisabled(true);
                     }}
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-fuchsia-500 hover:bg-fuchsia-600 focus:outline-none ml-2"
                     disabled={buttonDisabled}
                   >
-                    {t("Import")}
+                    {t('Import')}
                   </button>
                 </div>
 
-                { isTauri() && (
+                {isTauri() && (
                   <div className="sm:col-span-3 max-w-md rounded-xl mt-2">
                     <Link href="/">
-                      <button
-                        className="mt-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-500 hover:bg-red-600 focus:outline-none disabled:opacity-50 disabled:hover:bg-red-500 disabled:cursor-not-allowed ml-2"
-                      >
-                        {t("Cancel")}
+                      <button className="mt-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-500 hover:bg-red-600 focus:outline-none disabled:opacity-50 disabled:hover:bg-red-500 disabled:cursor-not-allowed ml-2">
+                        {t('Cancel')}
                       </button>
                     </Link>
                   </div>
-                ) }
+                )}
               </>
             )}
           </div>
@@ -209,7 +207,7 @@ export default function Import() {
           {description && (
             <div className="sm:col-span-3 max-w-md rounded-xl mt-4">
               <label className="block text-sm font-medium leading-6 text-gray-900">
-                {t("Description")}
+                {t('Description')}
               </label>
               <div className="mt-2">
                 <textarea
@@ -222,10 +220,10 @@ export default function Import() {
             </div>
           )}
 
-          { name && name != defaultConfig('name') && (
+          {name && name != defaultConfig('name') && (
             <div className="sm:col-span-3 max-w-md rounded-xl mt-4">
               <label className="block text-sm font-medium leading-6 text-gray-900">
-                {t("Name")}
+                {t('Name')}
               </label>
               <div className="mt-2">
                 <input
@@ -241,7 +239,7 @@ export default function Import() {
           {systemPrompt && systemPrompt != defaultConfig('system_prompt') && (
             <div className="sm:col-span-3 max-w-md rounded-xl mt-4">
               <label className="block text-sm font-medium leading-6 text-gray-900">
-                {t("System Prompt")}
+                {t('System Prompt')}
               </label>
               <div className="mt-2">
                 <textarea
@@ -254,26 +252,27 @@ export default function Import() {
             </div>
           )}
 
-          {visionSystemPrompt && visionSystemPrompt != defaultConfig('vision_system_prompt') && (
-            <div className="sm:col-span-3 max-w-md rounded-xl mt-4">
-              <label className="block text-sm font-medium leading-6 text-gray-900">
-                {t("Vision System Prompt")}
-              </label>
-              <div className="mt-2">
-                <textarea
-                  rows={4}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  defaultValue={visionSystemPrompt}
-                  disabled={true}
-                />
+          {visionSystemPrompt &&
+            visionSystemPrompt != defaultConfig('vision_system_prompt') && (
+              <div className="sm:col-span-3 max-w-md rounded-xl mt-4">
+                <label className="block text-sm font-medium leading-6 text-gray-900">
+                  {t('Vision System Prompt')}
+                </label>
+                <div className="mt-2">
+                  <textarea
+                    rows={4}
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    defaultValue={visionSystemPrompt}
+                    disabled={true}
+                  />
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
           {bgUrl && bgUrl != defaultConfig('bg_url') && (
             <div className="sm:col-span-3 max-w-md rounded-xl mt-4">
               <label className="block text-sm font-medium leading-6 text-gray-900">
-                {t("Background Url")}
+                {t('Background Url')}
               </label>
               <div className="mt-2">
                 <input
@@ -290,7 +289,7 @@ export default function Import() {
           {youtubeVideoId && youtubeVideoId != defaultConfig('youtube_videoid') && (
             <div className="sm:col-span-3 max-w-md rounded-xl mt-4">
               <label className="block text-sm font-medium leading-6 text-gray-900">
-                {t("Youtube Video Id")}
+                {t('Youtube Video Id')}
               </label>
               <div className="mt-2">
                 <input
@@ -300,14 +299,21 @@ export default function Import() {
                   disabled={true}
                 />
               </div>
-              <iframe width="100%" src={`https://www.youtube.com/embed/${youtubeVideoId}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
+              <iframe
+                width="100%"
+                src={`https://www.youtube.com/embed/${youtubeVideoId}`}
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
             </div>
           )}
 
           {vrmUrl && vrmUrl != defaultConfig('vrm_url') && (
             <div className="sm:col-span-3 max-w-md rounded-xl mt-4">
               <label className="block text-sm font-medium leading-6 text-gray-900">
-                {t("VRM Url")}
+                {t('VRM Url')}
               </label>
               <div className="mt-2">
                 <input
@@ -323,7 +329,7 @@ export default function Import() {
           {animationUrl && animationUrl != defaultConfig('animation_url') && (
             <div className="sm:col-span-3 max-w-md rounded-xl mt-4">
               <label className="block text-sm font-medium leading-6 text-gray-900">
-                {t("Animation Url")}
+                {t('Animation Url')}
               </label>
               <div className="mt-2">
                 <input
@@ -339,7 +345,7 @@ export default function Import() {
           {voiceUrl && voiceUrl != defaultConfig('voice_url') && (
             <div className="sm:col-span-3 max-w-md rounded-xl mt-4">
               <label className="block text-sm font-medium leading-6 text-gray-900">
-                {t("Voice Url")}
+                {t('Voice Url')}
               </label>
               <div className="mt-2">
                 <input

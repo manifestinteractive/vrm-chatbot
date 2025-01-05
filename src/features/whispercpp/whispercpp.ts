@@ -1,9 +1,6 @@
 import { config } from '@/utils/config';
 
-export async function whispercpp(
-  file: File,
-  prompt?: string,
-) {
+export async function whispercpp(file: File, prompt?: string) {
   // Request body
   const formData = new FormData();
   formData.append('file', file);
@@ -13,14 +10,14 @@ export async function whispercpp(
 
   console.debug('whispercpp req', formData);
 
-  const res = await fetch(`${config("whispercpp_url")}/inference`, {
-    method: "POST",
+  const res = await fetch(`${config('whispercpp_url')}/inference`, {
+    method: 'POST',
     body: formData,
     headers: {
-      'Accept': 'text/html',
+      Accept: 'text/html',
     },
   });
-  if (! res.ok) {
+  if (!res.ok) {
     throw new Error(`Whisper.cpp API Error (${res.status})`);
   }
   const data = await res.json();

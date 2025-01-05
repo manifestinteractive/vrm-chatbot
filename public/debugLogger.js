@@ -1,5 +1,5 @@
-if (typeof window !== "undefined") {
-  if(! window.error_handler_installed) {
+if (typeof window !== 'undefined') {
+  if (!window.error_handler_installed) {
     window.error_handler_logs = [];
 
     const handler = ((old) => ({
@@ -11,7 +11,7 @@ if (typeof window !== "undefined") {
         function logf() {
           window.error_handler_logs.push({
             type: name,
-            ts: +new Date,
+            ts: +new Date(),
             arguments,
           });
           passf.apply(null, arguments);
@@ -27,16 +27,16 @@ if (typeof window !== "undefined") {
           default:
             return passf;
         }
-      }
+      },
     }))(window.console);
     window.console = new Proxy({}, handler);
 
-    window.addEventListener("error", (e) => {
+    window.addEventListener('error', (e) => {
       console.error(`Error occurred: ${e.error.message} ${e.error.stack}`);
       return false;
     });
 
-    window.addEventListener("unhandledrejection", (e) => {
+    window.addEventListener('unhandledrejection', (e) => {
       console.error(`Unhandled rejection: ${e.message}`);
       return false;
     });

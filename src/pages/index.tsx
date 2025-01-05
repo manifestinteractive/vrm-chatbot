@@ -1,13 +1,8 @@
-import {
-  Fragment,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import Link from "next/link";
-import { Menu, Transition } from '@headlessui/react'
-import { clsx } from "clsx";
-import { M_PLUS_2, Montserrat } from "next/font/google";
+import { Fragment, useContext, useEffect, useState } from 'react';
+import Link from 'next/link';
+import { Menu, Transition } from '@headlessui/react';
+import { clsx } from 'clsx';
+import { M_PLUS_2, Montserrat } from 'next/font/google';
 import { useTranslation, Trans } from 'react-i18next';
 import {
   Bars3Icon,
@@ -22,50 +17,49 @@ import {
   // VideoCameraIcon,
   // VideoCameraSlashIcon,
   WrenchScrewdriverIcon,
-} from "@heroicons/react/24/outline";
+} from '@heroicons/react/24/outline';
 import { IconBrain } from '@tabler/icons-react';
 
-import { AssistantText } from "@/components/assistantText";
-import { SubconciousText } from "@/components/subconciousText";
-import { AddToHomescreen } from "@/components/addToHomescreen";
-import { Alert } from "@/components/alert";
-import { UserText } from "@/components/userText";
-import { ChatLog } from "@/components/chatLog";
-import VrmViewer from "@/components/vrmViewer";
-import { MessageInputContainer } from "@/components/messageInputContainer";
-import { Introduction } from "@/components/introduction";
-import { LoadingProgress } from "@/components/loadingProgress";
-import { DebugPane } from "@/components/debugPane";
-import { Settings } from "@/components/settings";
-import { EmbeddedWebcam } from "@/components/embeddedWebcam";
+import { AssistantText } from '@/components/assistantText';
+import { SubconciousText } from '@/components/subconciousText';
+import { AddToHomescreen } from '@/components/addToHomescreen';
+import { Alert } from '@/components/alert';
+import { UserText } from '@/components/userText';
+import { ChatLog } from '@/components/chatLog';
+import VrmViewer from '@/components/vrmViewer';
+import { MessageInputContainer } from '@/components/messageInputContainer';
+import { Introduction } from '@/components/introduction';
+import { LoadingProgress } from '@/components/loadingProgress';
+import { DebugPane } from '@/components/debugPane';
+import { Settings } from '@/components/settings';
+import { EmbeddedWebcam } from '@/components/embeddedWebcam';
 
-import { ViewerContext } from "@/features/vrmViewer/viewerContext";
-import { Message, Role } from "@/features/chat/messages";
-import { ChatContext } from "@/features/chat/chatContext";
-import { AlertContext } from "@/features/alert/alertContext";
+import { ViewerContext } from '@/features/vrmViewer/viewerContext';
+import { Message, Role } from '@/features/chat/messages';
+import { ChatContext } from '@/features/chat/chatContext';
+import { AlertContext } from '@/features/alert/alertContext';
 
 import { config, updateConfig } from '@/utils/config';
 // import { isTauri } from '@/utils/isTauri';
 // import { langs } from '@/i18n/langs';
-import { VrmStoreProvider } from "@/features/vrmStore/vrmStoreContext";
-import { AmicaLifeContext } from "@/features/amicaLife/amicaLifeContext";
-import { ChatModeText } from "@/components/chatModeText";
+import { VrmStoreProvider } from '@/features/vrmStore/vrmStoreContext';
+import { AmicaLifeContext } from '@/features/amicaLife/amicaLifeContext';
+import { ChatModeText } from '@/components/chatModeText';
 
-import { VerticalSwitchBox } from "@/components/switchBox"
-import { TimestampedPrompt } from "@/features/amicaLife/eventHandler";
+import { VerticalSwitchBox } from '@/components/switchBox';
+import { TimestampedPrompt } from '@/features/amicaLife/eventHandler';
 
 const m_plus_2 = M_PLUS_2({
-  variable: "--font-m-plus-2",
-  display: "swap",
+  variable: '--font-m-plus-2',
+  display: 'swap',
   preload: false,
 });
 
 const montserrat = Montserrat({
-  variable: "--font-montserrat",
-  display: "swap",
-  subsets: ["latin"],
+  variable: '--font-montserrat',
+  display: 'swap',
+  subsets: ['latin'],
 });
-
 
 export default function Home() {
   const { t, i18n } = useTranslation();
@@ -78,9 +72,9 @@ export default function Home() {
   const [chatSpeaking, setChatSpeaking] = useState(false);
   const [chatProcessing, setChatProcessing] = useState(false);
   const [chatLog, setChatLog] = useState<Message[]>([]);
-  const [assistantMessage, setAssistantMessage] = useState("");
-  const [userMessage, setUserMessage] = useState("");
-  const [shownMessage, setShownMessage] = useState<Role>("system");
+  const [assistantMessage, setAssistantMessage] = useState('');
+  const [userMessage, setUserMessage] = useState('');
+  const [shownMessage, setShownMessage] = useState<Role>('system');
   const [subconciousLogs, setSubconciousLogs] = useState<TimestampedPrompt[]>([]);
 
   // showContent exists to allow ssr
@@ -94,7 +88,7 @@ export default function Home() {
   const [showSubconciousText, setShowSubconciousText] = useState(false);
 
   // null indicates haven't loaded config yet
-  const [muted, setMuted] = useState<boolean|null>(null);
+  const [muted, setMuted] = useState<boolean | null>(null);
   const [webcamEnabled, setWebcamEnabled] = useState(false);
   // const [showLanguageSelector, setShowLanguageSelector] = useState(false);
 
@@ -107,26 +101,25 @@ export default function Home() {
       setMuted(config('tts_muted') === 'true');
     }
 
-    if (config("bg_color") !== '') {
-      document.body.style.backgroundColor = config("bg_color");
+    if (config('bg_color') !== '') {
+      document.body.style.backgroundColor = config('bg_color');
     } else {
-      document.body.style.backgroundImage = `url(${config("bg_url")})`;
+      document.body.style.backgroundImage = `url(${config('bg_url')})`;
     }
-
   }, []);
 
   function toggleTTSMute() {
-    updateConfig('tts_muted', config('tts_muted') === 'true' ? 'false' : 'true')
-    setMuted(config('tts_muted') === 'true')
+    updateConfig('tts_muted', config('tts_muted') === 'true' ? 'false' : 'true');
+    setMuted(config('tts_muted') === 'true');
   }
 
   const toggleState = (
     setFunc: React.Dispatch<React.SetStateAction<boolean>>,
     deps: React.Dispatch<React.SetStateAction<boolean>>[],
   ) => {
-    setFunc(prev => {
+    setFunc((prev) => {
       if (!prev) {
-        deps.forEach(dep => dep(false));
+        deps.forEach((dep) => dep(false));
       }
       return !prev;
     });
@@ -161,18 +154,13 @@ export default function Home() {
 
     // TODO remove in future
     // this change was just to make naming cleaner
-    if (config("tts_backend") === 'openai') {
-      updateConfig("tts_backend", "openai_tts");
+    if (config('tts_backend') === 'openai') {
+      updateConfig('tts_backend', 'openai_tts');
     }
   }, [bot, viewer]);
 
   useEffect(() => {
-    amicaLife.initialize(
-      viewer,
-      bot,
-      setSubconciousLogs,
-      chatSpeaking,
-    );
+    amicaLife.initialize(viewer, bot, setSubconciousLogs, chatSpeaking);
   }, [amicaLife, bot, viewer]);
 
   // this exists to prevent build errors with ssr
@@ -180,36 +168,32 @@ export default function Home() {
   if (!showContent) return <></>;
 
   return (
-    <div className={clsx(
-      m_plus_2.variable,
-      montserrat.variable,
-    )}>
-      { config("youtube_videoid") !== '' && (
+    <div className={clsx(m_plus_2.variable, montserrat.variable)}>
+      {config('youtube_videoid') !== '' && (
         <div className="fixed video-container w-full h-full z-0">
           <iframe
             className="w-full h-full"
-            src={`https://www.youtube.com/embed/${config("youtube_videoid")}?&autoplay=1&mute=1&playsinline=1&loop=1&controls=0&disablekb=1&fs=0&playlist=${config("youtube_videoid")}`}
-            frameBorder="0"></iframe>
+            src={`https://www.youtube.com/embed/${config('youtube_videoid')}?&autoplay=1&mute=1&playsinline=1&loop=1&controls=0&disablekb=1&fs=0&playlist=${config('youtube_videoid')}`}
+            frameBorder="0"
+          ></iframe>
         </div>
       )}
 
-      <Introduction open={config("show_introduction") === 'true'} />
+      <Introduction open={config('show_introduction') === 'true'} />
 
       <LoadingProgress />
 
-      { webcamEnabled && <EmbeddedWebcam setWebcamEnabled={setWebcamEnabled} /> }
-      { showDebug && <DebugPane onClickClose={() => setShowDebug(false) }/> }
+      {webcamEnabled && <EmbeddedWebcam setWebcamEnabled={setWebcamEnabled} />}
+      {showDebug && <DebugPane onClickClose={() => setShowDebug(false)} />}
 
       <VrmStoreProvider>
-        <VrmViewer chatMode={showChatMode}/>
-        {showSettings && (
-          <Settings
-            onClickClose={() => setShowSettings(false)}
-          />
-        )}
+        <VrmViewer chatMode={showChatMode} />
+        {showSettings && <Settings onClickClose={() => setShowSettings(false)} />}
       </VrmStoreProvider>
 
-      {!showSettings && !showDebug && (<MessageInputContainer isChatProcessing={chatProcessing} />)}
+      {!showSettings && !showDebug && (
+        <MessageInputContainer isChatProcessing={chatProcessing} />
+      )}
 
       {/* main menu */}
       <Menu as="div">
@@ -233,7 +217,7 @@ export default function Home() {
           <Menu.Items className="absolute left-1 top-12 z-10 origin-top-right focus:outline-none">
             <div className="py-0">
               <div className="grid grid-flow-col gap-[8px] place-content-end mt-2 rounded-md shadow-sm">
-                <div className='flex flex-col justify-center items-center p-1 space-y-3'>
+                <div className="flex flex-col justify-center items-center p-1 space-y-3">
                   <div className="flex flex-row items-center space-x-2">
                     <WrenchScrewdriverIcon
                       className="h-7 w-7 text-white opacity-50 hover:opacity-100 active:opacity-100 hover:cursor-pointer"
@@ -259,7 +243,7 @@ export default function Home() {
                   </div>
 
                   <div className="flex flex-row items-center space-x-2">
-                    { muted ? (
+                    {muted ? (
                       <SpeakerXMarkIcon
                         className="h-7 w-7 text-white opacity-50 hover:opacity-100 active:opacity-100 hover:cursor-pointer"
                         aria-hidden="true"
@@ -274,7 +258,6 @@ export default function Home() {
                     )}
                     <span className="text-white hidden">Mute / Unmute</span>
                   </div>
-
 
                   {/* <div className="flex flex-row items-center space-x-2">
                     { webcamEnabled ? (
@@ -358,7 +341,7 @@ export default function Home() {
                   </div> */}
 
                   <div className="flex flex-row items-center space-x-2">
-                    { showSubconciousText ? (
+                    {showSubconciousText ? (
                       <IconBrain
                         className="h-7 w-7 text-white opacity-100 hover:opacity-50 active:opacity-100 hover:cursor-pointer"
                         aria-hidden="true"
@@ -376,22 +359,21 @@ export default function Home() {
                   </div>
 
                   <div className="flex flex-row items-center space-x-2">
-                      <CodeBracketSquareIcon
-                        className="h-7 w-7 text-white opacity-50 hover:opacity-100 active:opacity-100 hover:cursor-pointer"
-                        aria-hidden="true"
-                        onClick={() => setShowDebug(true)}
-                      />
-                      <span className="text-white hidden">Debug</span>
+                    <CodeBracketSquareIcon
+                      className="h-7 w-7 text-white opacity-50 hover:opacity-100 active:opacity-100 hover:cursor-pointer"
+                      aria-hidden="true"
+                      onClick={() => setShowDebug(true)}
+                    />
+                    <span className="text-white hidden">Debug</span>
                   </div>
 
                   <div className="flex flex-row items-center space-x-2">
                     <VerticalSwitchBox
-                        value={showChatMode}
-                        label={""}
-                        onChange={toggleChatMode}
-                      />
+                      value={showChatMode}
+                      label={''}
+                      onChange={toggleChatMode}
+                    />
                   </div>
-
                 </div>
               </div>
             </div>
@@ -402,22 +384,18 @@ export default function Home() {
       {showChatLog && <ChatLog messages={chatLog} />}
 
       {/* Normal chat text */}
-      {!showSubconciousText && ! showChatLog && ! showChatMode && (
+      {!showSubconciousText && !showChatLog && !showChatMode && (
         <>
-          { shownMessage === 'assistant' && (
-            <AssistantText message={assistantMessage} />
-          )}
-          { shownMessage === 'user' && (
-            <UserText message={userMessage} />
-          )}
+          {shownMessage === 'assistant' && <AssistantText message={assistantMessage} />}
+          {shownMessage === 'user' && <UserText message={userMessage} />}
         </>
       )}
 
       {/* Chat mode text */}
-      {showChatMode && <ChatModeText messages={chatLog}/>}
+      {showChatMode && <ChatModeText messages={chatLog} />}
 
       {/* Subconcious stored prompt text */}
-      {showSubconciousText && <SubconciousText messages={subconciousLogs}/>}
+      {showSubconciousText && <SubconciousText messages={subconciousLogs} />}
 
       <AddToHomescreen />
 

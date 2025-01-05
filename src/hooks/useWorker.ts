@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 export interface MessageEventHandler {
   (event: MessageEvent): void;
@@ -6,7 +6,7 @@ export interface MessageEventHandler {
 
 export function useWorker(
   workerType: string,
-  messageEventHandler: MessageEventHandler
+  messageEventHandler: MessageEventHandler,
 ): Worker {
   // Create new worker once and never again
   const [worker] = useState(() => createWorker(workerType, messageEventHandler));
@@ -15,14 +15,14 @@ export function useWorker(
 
 function createWorker(
   workerType: string,
-  messageEventHandler: MessageEventHandler
+  messageEventHandler: MessageEventHandler,
 ): Worker {
-  if (workerType === "whisper") {
-    const worker = new Worker(new URL("../workers/whisper.js", import.meta.url), {
-      type: "module",
+  if (workerType === 'whisper') {
+    const worker = new Worker(new URL('../workers/whisper.js', import.meta.url), {
+      type: 'module',
     });
     // Listen for messages from the Web Worker
-    worker.addEventListener("message", messageEventHandler);
+    worker.addEventListener('message', messageEventHandler);
     return worker;
   }
 

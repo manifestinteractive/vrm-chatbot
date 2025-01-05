@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { pipeline, env } from "@xenova/transformers";
+import { pipeline, env } from '@xenova/transformers';
 
 // Disable local models
 env.allowLocalModels = false;
@@ -30,29 +30,26 @@ class PipelineFactory {
   }
 }
 
-self.addEventListener("message", async (event) => {
+self.addEventListener('message', async (event) => {
   const message = event.data;
 
   // Do some work...
   // 'cmu_us_slt_arctic-wav-arctic_a0001.bin'
   // 'speaker_embeddings.bin',
-  let audio = await tts(
-    message.text,
-    message.speaker_embeddings,
-  );
+  let audio = await tts(message.text, message.speaker_embeddings);
   if (audio === null) return;
 
   // Send the result back to the main thread
   self.postMessage({
-    status: "complete",
-    task: "text-to-speech",
+    status: 'complete',
+    task: 'text-to-speech',
     data: audio,
   });
 });
 
 class TextToSpeechPipelineFactory extends PipelineFactory {
-  static task = "text-to-speech";
-  static model = "Xenova/speecht5_tts";
+  static task = 'text-to-speech';
+  static model = 'Xenova/speecht5_tts';
   static quantized = null;
 }
 
@@ -67,8 +64,8 @@ const tts = async (text, speaker_embeddings) => {
   // Inject custom callback function to handle merging of chunks
   function callback_function(item) {
     self.postMessage({
-      status: "update",
-      task: "text-to-speech",
+      status: 'update',
+      task: 'text-to-speech',
       data: data,
     });
   }
@@ -79,8 +76,8 @@ const tts = async (text, speaker_embeddings) => {
     callback_function: callback_function, // after each generation step
   }).catch((error) => {
     self.postMessage({
-      status: "error",
-      task: "text-to-speech",
+      status: 'error',
+      task: 'text-to-speech',
       data: error,
     });
     return null;

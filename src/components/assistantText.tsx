@@ -1,19 +1,19 @@
-import { useEffect, useRef, useState } from "react";
-import { clsx } from "clsx";
-import { config } from "@/utils/config";
-import { IconButton } from "./iconButton";
+import { useEffect, useRef, useState } from 'react';
+import { clsx } from 'clsx';
+import { config } from '@/utils/config';
+import { IconButton } from './iconButton';
 
 export const AssistantText = ({ message }: { message: string }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [unlimited, setUnlimited] = useState(false)
+  const [unlimited, setUnlimited] = useState(false);
 
   // Replace all of the emotion tag in message with ""
-  message = message.replace(/\[(.*?)\]/g, "");
+  message = message.replace(/\[(.*?)\]/g, '');
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
+      behavior: 'smooth',
+      block: 'center',
     });
   });
 
@@ -33,12 +33,14 @@ export const AssistantText = ({ message }: { message: string }) => {
                 onClick={() => setUnlimited(!unlimited)}
               />
             </div>
-            <div className={clsx(
-              "px-8 py-4 overflow-y-auto",
-              unlimited ? 'max-h-[calc(75vh)]' : 'max-h-32',
-            )}>
+            <div
+              className={clsx(
+                'px-8 py-4 overflow-y-auto',
+                unlimited ? 'max-h-[calc(75vh)]' : 'max-h-32',
+              )}
+            >
               <div className="min-h-8 max-h-full text-gray-700 typography-16 font-bold">
-                {message.replace(/\[([a-zA-Z]*?)\]/g, "")}
+                {message.replace(/\[([a-zA-Z]*?)\]/g, '')}
                 <div ref={scrollRef} />
               </div>
             </div>
@@ -48,4 +50,3 @@ export const AssistantText = ({ message }: { message: string }) => {
     </div>
   );
 };
-

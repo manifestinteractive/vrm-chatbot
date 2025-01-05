@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { pipeline, env } from "@xenova/transformers";
+import { pipeline, env } from '@xenova/transformers';
 
 // Disable local models
 env.allowLocalModels = false;
@@ -30,7 +30,7 @@ class PipelineFactory {
   }
 }
 
-self.addEventListener("message", async (event) => {
+self.addEventListener('message', async (event) => {
   const message = event.data;
 
   // Do some work...
@@ -40,16 +40,16 @@ self.addEventListener("message", async (event) => {
 
   // Send the result back to the main thread
   self.postMessage({
-    status: "complete",
-    task: "automatic-speech-recognition",
+    status: 'complete',
+    task: 'automatic-speech-recognition',
     data: transcript,
   });
 });
 
 class AutomaticSpeechRecognitionPipelineFactory extends PipelineFactory {
-  static task = "automatic-speech-recognition";
+  static task = 'automatic-speech-recognition';
   // TODO load this from config
-  static model = "Xenova/whisper-tiny.en";
+  static model = 'Xenova/whisper-tiny.en';
   // static model = "distil-whisper/distil-medium.en";
   static quantized = true;
 }
@@ -125,8 +125,8 @@ const transcribe = async (audio) => {
     });
 
     self.postMessage({
-      status: "update",
-      task: "automatic-speech-recognition",
+      status: 'update',
+      task: 'automatic-speech-recognition',
       data: data,
     });
   }
@@ -154,8 +154,8 @@ const transcribe = async (audio) => {
     chunk_callback: chunk_callback, // after each chunk is processed
   }).catch((error) => {
     self.postMessage({
-      status: "error",
-      task: "automatic-speech-recognition",
+      status: 'error',
+      task: 'automatic-speech-recognition',
       data: error,
     });
     return null;

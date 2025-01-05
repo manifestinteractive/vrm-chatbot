@@ -1,12 +1,10 @@
-import dynamic from "next/dynamic";
-import { useCallback, useEffect, useState } from "react";
+import dynamic from 'next/dynamic';
+import { useCallback, useEffect, useState } from 'react';
 
 // necessary because of VAD in MessageInput
-const DynamicMessageInput = dynamic(() =>
-  import("@/components/messageInput"), {
-    ssr: false
-  }
-);
+const DynamicMessageInput = dynamic(() => import('@/components/messageInput'), {
+  ssr: false,
+});
 
 /**
  * Provides text input and voice input
@@ -19,11 +17,11 @@ export const MessageInputContainer = ({
 }: {
   isChatProcessing: boolean;
 }) => {
-  const [userMessage, setUserMessage] = useState("");
+  const [userMessage, setUserMessage] = useState('');
 
   useEffect(() => {
     if (!isChatProcessing) {
-      setUserMessage("");
+      setUserMessage('');
     }
   }, [isChatProcessing]);
 

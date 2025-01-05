@@ -1,5 +1,5 @@
-import { createContext } from "react";
-import { Alert } from "./alert";
+import { createContext } from 'react';
+import { Alert } from './alert';
 
 const alert = new Alert();
 

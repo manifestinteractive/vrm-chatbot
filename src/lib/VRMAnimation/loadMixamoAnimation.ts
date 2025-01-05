@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { VRM } from "@pixiv/three-vrm";
+import { VRM } from '@pixiv/three-vrm';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { mixamoVRMRigMap } from './mixamoVRMRigMap';
 
@@ -53,9 +53,7 @@ export function loadMixamoAnimation(url: string, vrm: VRM) {
             _quatA.fromArray(flatQuaternion);
 
             // 親のレスト時ワールド回転 * トラックの回転 * レスト時ワールド回転の逆
-            _quatA
-              .premultiply(parentRestWorldRotation)
-              .multiply(restRotationInverse);
+            _quatA.premultiply(parentRestWorldRotation).multiply(restRotationInverse);
 
             _quatA.toArray(flatQuaternion);
 
@@ -68,14 +66,23 @@ export function loadMixamoAnimation(url: string, vrm: VRM) {
             new THREE.QuaternionKeyframeTrack(
               `${vrmNodeName}.${propertyName}`,
               track.times,
-              track.values.map((v, i) => (vrm.meta?.metaVersion === '0' && i % 2 === 0 ? - v : v)),
+              track.values.map((v, i) =>
+                vrm.meta?.metaVersion === '0' && i % 2 === 0 ? -v : v,
+              ),
             ),
           );
-
         } else if (track instanceof THREE.VectorKeyframeTrack) {
-          const value = track.values.map((v, i) => (vrm.meta?.metaVersion === '0' && i % 3 !== 1 ? - v : v) * hipsPositionScale);
-          tracks.push(new THREE.VectorKeyframeTrack(`${vrmNodeName}.${propertyName}`, track.times, value));
-
+          const value = track.values.map(
+            (v, i) =>
+              (vrm.meta?.metaVersion === '0' && i % 3 !== 1 ? -v : v) * hipsPositionScale,
+          );
+          tracks.push(
+            new THREE.VectorKeyframeTrack(
+              `${vrmNodeName}.${propertyName}`,
+              track.times,
+              value,
+            ),
+          );
         }
       }
     });

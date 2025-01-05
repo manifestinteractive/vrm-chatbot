@@ -1,9 +1,9 @@
-import * as THREE from "three";
-import { Model } from "./model";
-import { loadVRMAnimation } from "@/lib/VRMAnimation/loadVRMAnimation";
-import { loadMixamoAnimation } from "@/lib/VRMAnimation/loadMixamoAnimation";
+import * as THREE from 'three';
+import { Model } from './model';
+import { loadVRMAnimation } from '@/lib/VRMAnimation/loadVRMAnimation';
+import { loadMixamoAnimation } from '@/lib/VRMAnimation/loadMixamoAnimation';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { config } from "@/utils/config";
+import { config } from '@/utils/config';
 
 /**
  * three.jsを使った3Dビューワー
@@ -65,9 +65,10 @@ export class Viewer {
 
       this._scene.add(this.model.vrm.scene);
 
-      const animation = config("animation_url").indexOf("vrma") > 0
-        ? await loadVRMAnimation(config("animation_url"))
-        : await loadMixamoAnimation(config("animation_url"), this.model?.vrm);
+      const animation =
+        config('animation_url').indexOf('vrma') > 0
+          ? await loadVRMAnimation(config('animation_url'))
+          : await loadMixamoAnimation(config('animation_url'), this.model?.vrm);
       if (animation) this.model.loadAnimation(animation);
 
       // HACK: アニメーションの原点がずれているので再生後にカメラ位置を調整する
@@ -107,10 +108,7 @@ export class Viewer {
     this._cameraControls?.target.set(0, 1.3, 0);
     this._cameraControls?.update();
     // camera controls
-    this._cameraControls = new OrbitControls(
-      this._camera,
-      this._renderer.domElement
-    );
+    this._cameraControls = new OrbitControls(this._camera, this._renderer.domElement);
 
     this._cameraControls.screenSpacePanning = true;
 
@@ -123,7 +121,7 @@ export class Viewer {
     this._raycaster = new THREE.Raycaster();
     this._mouse = new THREE.Vector2();
 
-    window.addEventListener("resize", () => {
+    window.addEventListener('resize', () => {
       this.resize();
     });
 
@@ -141,18 +139,14 @@ export class Viewer {
     if (!parentElement) return;
 
     this._renderer.setPixelRatio(window.devicePixelRatio);
-    this._renderer.setSize(
-      parentElement.clientWidth,
-      parentElement.clientHeight
-    );
+    this._renderer.setSize(parentElement.clientWidth, parentElement.clientHeight);
 
     if (!this._camera) return;
-    this._camera.aspect =
-      parentElement.clientWidth / parentElement.clientHeight;
+    this._camera.aspect = parentElement.clientWidth / parentElement.clientHeight;
     this._camera.updateProjectionMatrix();
   }
 
-  public resizeChatMode(on: boolean){
+  public resizeChatMode(on: boolean) {
     if (!this._renderer) return;
 
     const parentElement = this._renderer.domElement.parentElement;
@@ -162,16 +156,15 @@ export class Viewer {
 
     let width = parentElement.clientWidth;
     let height = parentElement.clientHeight;
-    if (on) {width = width/2; height = height/2; }
+    if (on) {
+      width = width / 2;
+      height = height / 2;
+    }
 
-    this._renderer.setSize(
-      width,
-      height
-    );
+    this._renderer.setSize(width, height);
 
     if (!this._camera) return;
-    this._camera.aspect =
-      parentElement.clientWidth / parentElement.clientHeight;
+    this._camera.aspect = parentElement.clientWidth / parentElement.clientHeight;
     this._camera.updateProjectionMatrix();
   }
 
@@ -179,14 +172,14 @@ export class Viewer {
    * VRMのheadノードを参照してカメラ位置を調整する
    */
   public resetCamera() {
-    const headNode = this.model?.vrm?.humanoid.getNormalizedBoneNode("head");
+    const headNode = this.model?.vrm?.humanoid.getNormalizedBoneNode('head');
 
     if (headNode) {
       const headWPos = headNode.getWorldPosition(new THREE.Vector3());
       this._camera?.position.set(
         this._camera.position.x,
         headWPos.y,
-        this._camera.position.z
+        this._camera.position.z,
       );
       this._cameraControls?.target.set(headWPos.x, headWPos.y, headWPos.z);
       this._cameraControls?.update();
@@ -198,9 +191,9 @@ export class Viewer {
     const newPosition = new THREE.Vector3(
       this._camera?.position.x,
       1.3,
-      this._camera?.position.z
+      this._camera?.position.z,
     );
-    this._camera?.position.lerpVectors(this._camera?.position,newPosition,0);
+    this._camera?.position.lerpVectors(this._camera?.position, newPosition, 0);
     // this._cameraControls?.target.lerpVectors(this._cameraControls?.target,headWPos,0.5);
     // this._cameraControls?.update();
   }
@@ -216,9 +209,8 @@ export class Viewer {
     if (this._renderer && this._camera) {
       this._renderer.render(this._scene, this._camera);
       if (this.sendScreenshotToCallback && this.screenshotCallback) {
-        this._renderer.domElement.toBlob(this.screenshotCallback, "image/jpeg");
+        this._renderer.domElement.toBlob(this.screenshotCallback, 'image/jpeg');
         this.sendScreenshotToCallback = false;
-
       }
     }
   };

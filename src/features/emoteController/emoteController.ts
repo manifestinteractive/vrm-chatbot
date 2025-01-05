@@ -1,6 +1,6 @@
-import * as THREE from "three";
-import { VRM, VRMExpressionPresetName } from "@pixiv/three-vrm";
-import { ExpressionController } from "./expressionController";
+import * as THREE from 'three';
+import { VRM, VRMExpressionPresetName } from '@pixiv/three-vrm';
+import { ExpressionController } from './expressionController';
 
 /**
  * 感情表現としてExpressionとMotionを操作する為のクラス
@@ -11,6 +11,7 @@ export class EmoteController {
 
   constructor(vrm: VRM, camera: THREE.Object3D) {
     this._expressionController = new ExpressionController(vrm, camera);
+    // "aa" | "ih" | "ou" | "ee" | "oh" | "blink" | "happy" | "angry" | "sad" | "relaxed" | "lookUp" | "surprised" | "lookDown" | "lookLeft" | "lookRight" | "blinkLeft" | "blinkRight" | "neutral"
   }
 
   public playEmotion(preset: VRMExpressionPresetName | string) {

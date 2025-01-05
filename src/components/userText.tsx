@@ -1,17 +1,17 @@
 import { useTranslation } from 'react-i18next';
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
 export const UserText = ({ message }: { message: string }) => {
   const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Replace all of the emotion tag in message with ""
-  message = message.replace(/\[(.*?)\]/g, "");
+  message = message.replace(/\[(.*?)\]/g, '');
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
+      behavior: 'smooth',
+      block: 'center',
     });
   });
 
@@ -22,13 +22,13 @@ export const UserText = ({ message }: { message: string }) => {
           <div className="bg-white/70 rounded-lg backdrop-blur-lg shadow-lg">
             <div className="px-8 pr-1 py-3 bg-rose/90 rounded-t-lg text-white font-bold tracking-wider">
               <span className="p-4 bg-cyan-600/80 rounded-lg rounded-tl-none rounded-tr-none shadow-sm">
-                {t("YOU")}
+                {t('YOU')}
               </span>
             </div>
 
             <div className="px-8 py-4 max-h-32 overflow-y-auto">
               <div className="min-h-8 max-h-full typography-16 font-bold text-gray-600">
-                {message.replace(/\[([a-zA-Z]*?)\]/g, "")}
+                {message.replace(/\[([a-zA-Z]*?)\]/g, '')}
                 <div ref={scrollRef} />
               </div>
             </div>

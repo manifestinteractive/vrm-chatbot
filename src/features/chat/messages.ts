@@ -1,4 +1,4 @@
-export type Role = "assistant" | "system" | "user";
+export type Role = 'assistant' | 'system' | 'user';
 
 // ChatGPT API
 export type Message = {
@@ -7,12 +7,14 @@ export type Message = {
 };
 
 const talkStyles = [
-  "talk",
-  "happy",
-  "sad",
-  "angry",
-  "fear",
-  "surprised",
+  'angry',
+  'fear',
+  'happy',
+  'neutral',
+  'relaxed',
+  'sad',
+  'surprised',
+  'talk',
 ] as const;
 export type TalkStyle = (typeof talkStyles)[number];
 
@@ -21,16 +23,33 @@ export type Talk = {
   message: string;
 };
 
-//Name of all the expression in the vrm 
+//Name of all the expression in the vrm
 export const emotionNames: string[] = [];
-export const emotions = ['angry', 'bored', 'happy', 'jealous', 'love', 'neutral', 'relaxed', 'sad', 'serious', 'shy', 'sleep', 'surprised', 'suspicious', 'victory'] as const;
+export const emotions = [
+  'angry',
+  'bored',
+  'happy',
+  'jealous',
+  'love',
+  'neutral',
+  'relaxed',
+  'sad',
+  'serious',
+  'shy',
+  'sleep',
+  'surprised',
+  'suspicious',
+  'victory',
+] as const;
 
 // Convert user input to system format e.g. ["suspicious"] -> ["Sus"], ["sleep"] -> ["Sleep"]
 const userInputToSystem = (input: string) => {
   const mapping: { [key: string]: string } = {
-    ...Object.fromEntries(emotions
-      .filter(e => e[0] === e[0].toUpperCase())
-      .map(e => [e.toLowerCase(), e]))
+    ...Object.fromEntries(
+      emotions
+        .filter((e) => e[0] === e[0].toUpperCase())
+        .map((e) => [e.toLowerCase(), e]),
+    ),
   };
 
   return mapping[input.toLowerCase()] || input;
@@ -47,11 +66,10 @@ export type Screenplay = {
   text: string;
 };
 
-export const textsToScreenplay = (
-  texts: string[],
-): Screenplay[] => {
+export const textsToScreenplay = (texts: string[]): Screenplay[] => {
+  console.log('[messageZ]', 'textsToScreenplay', texts);
   const screenplays: Screenplay[] = [];
-  let prevExpression = "neutral";
+  let prevExpression = 'neutral';
   for (let i = 0; i < texts.length; i++) {
     const text = texts[i];
 
@@ -59,13 +77,13 @@ export const textsToScreenplay = (
 
     const tag = (match && match[1]) || prevExpression;
 
-    const message = text.replace(/\[(.*?)\]/g, "");
+    const message = text.replace(/\[(.*?)\]/g, '');
 
     let expression = prevExpression;
     const systemTag = userInputToSystem(tag);
 
     if (emotions.includes(systemTag as any)) {
-      console.log("Emotion detect :",systemTag);
+      console.log('Emotion detect :', systemTag);
       expression = systemTag;
       prevExpression = systemTag;
     }
@@ -85,13 +103,27 @@ export const textsToScreenplay = (
 
 const emotionToTalkStyle = (emotion: EmotionType): TalkStyle => {
   switch (emotion) {
-    case "angry":
-      return "angry";
-    case "happy":
-      return "happy";
-    case "sad":
-      return "sad";
+    case 'angry':
+      return 'angry';
+    case 'happy':
+    case 'victory':
+      return 'happy';
+    case 'bored':
+    case 'jealous':
+    case 'suspicious':
+    case 'sad':
+      return 'sad';
+    case 'surprised':
+      return 'surprised';
+    case 'neutral':
+      return 'neutral';
+    case 'love':
+    case 'relaxed':
+    case 'serious':
+    case 'shy':
+    case 'sleep':
+      return 'relaxed';
     default:
-      return "talk";
+      return 'talk';
   }
 };

@@ -27,17 +27,22 @@ export function MenuPage({
           <div className="min-w-0 flex-auto">
             <div className="flex items-center gap-x-3">
               <h2 className="min-w-0 text-sm font-semibold leading-6">
-                <span className={clsx(
-                  'whitespace-nowrap flex w-0 flex-1 gap-x-2 items-center',
-                  link.className,
-                )}>
+                <span
+                  className={clsx(
+                    'whitespace-nowrap flex w-0 flex-1 gap-x-2 items-center',
+                    link.className,
+                  )}
+                >
                   {link.icon}
                   {t(link.label)}
                 </span>
               </h2>
             </div>
           </div>
-          <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
+          <ChevronRightIcon
+            className="h-5 w-5 flex-none text-gray-400"
+            aria-hidden="true"
+          />
         </li>
       ))}
     </ul>

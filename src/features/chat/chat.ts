@@ -1,7 +1,7 @@
 import { Queue } from 'typescript-collections';
-import { Message, Role, Screenplay, Talk, textsToScreenplay } from "./messages";
-import { Viewer } from "@/features/vrmViewer/viewer";
-import { Alert } from "@/features/alert/alert";
+import { Message, Role, Screenplay, Talk, textsToScreenplay } from './messages';
+import { Viewer } from '@/features/vrmViewer/viewer';
+import { Alert } from '@/features/alert/alert';
 
 import { getEchoChatResponseStream } from './echoChat';
 import { getOpenAiChatResponseStream } from './openAiChat';
@@ -10,35 +10,34 @@ import { getWindowAiChatResponseStream } from './windowAiChat';
 import { getOllamaChatResponseStream, getOllamaVisionChatResponse } from './ollamaChat';
 import { getKoboldAiChatResponseStream } from './koboldAiChat';
 
-import { rvc } from "@/features/rvc/rvc";
-import { coquiLocal } from "@/features/coquiLocal/coquiLocal";
-import { piper } from "@/features/piper/piper";
-import { elevenlabs } from "@/features/elevenlabs/elevenlabs";
-import { speecht5 } from "@/features/speecht5/speecht5";
-import { openaiTTS } from "@/features/openaiTTS/openaiTTS";
-import { localXTTSTTS} from "@/features/localXTTS/localXTTS";
+import { rvc } from '@/features/rvc/rvc';
+import { coquiLocal } from '@/features/coquiLocal/coquiLocal';
+import { piper } from '@/features/piper/piper';
+import { elevenlabs } from '@/features/elevenlabs/elevenlabs';
+import { speecht5 } from '@/features/speecht5/speecht5';
+import { openaiTTS } from '@/features/openaiTTS/openaiTTS';
+import { localXTTSTTS } from '@/features/localXTTS/localXTTS';
 
 import { AmicaLife } from '@/features/amicaLife/amicaLife';
 
-import { config } from "@/utils/config";
-import { buildSystemPrompt } from "@/utils/persona";
-import { cleanTalk } from "@/utils/cleanTalk";
-import { processResponse } from "@/utils/processResponse";
-import { wait } from "@/utils/wait";
-import { isCharacterIdle, characterIdleTime, resetIdleTimer } from "@/utils/isIdle";
+import { config } from '@/utils/config';
+import { buildSystemPrompt } from '@/utils/persona';
+import { cleanTalk } from '@/utils/cleanTalk';
+import { processResponse } from '@/utils/processResponse';
+import { wait } from '@/utils/wait';
+import { isCharacterIdle, characterIdleTime, resetIdleTimer } from '@/utils/isIdle';
 import { getOpenRouterChatResponseStream } from './openRouterChat';
 
-
 type Speak = {
-  audioBuffer: ArrayBuffer|null;
+  audioBuffer: ArrayBuffer | null;
   screenplay: Screenplay;
   streamIdx: number;
-}
+};
 
 type TTSJob = {
   screenplay: Screenplay;
   streamIdx: number;
-}
+};
 
 export class Chat {
   public initialized: boolean;
@@ -56,9 +55,9 @@ export class Chat {
 
   // the message from the user that is currently being processed
   // it can be reset
-  public stream: ReadableStream<Uint8Array>|null;
+  public stream: ReadableStream<Uint8Array> | null;
   public streams: ReadableStream<Uint8Array>[];
-  public reader: ReadableStreamDefaultReader<Uint8Array>|null;
+  public reader: ReadableStreamDefaultReader<Uint8Array> | null;
   public readers: ReadableStreamDefaultReader<Uint8Array>[];
 
   // process these immediately as they come in and add to audioToPlay
@@ -88,8 +87,8 @@ export class Chat {
     this.ttsJobs = new Queue<TTSJob>();
     this.speakJobs = new Queue<Speak>();
 
-    this.currentAssistantMessage = "";
-    this.currentUserMessage = "";
+    this.currentAssistantMessage = '';
+    this.currentUserMessage = '';
 
     this.messageList = [];
     this.currentStreamIdx = 0;
@@ -137,15 +136,15 @@ export class Chat {
   }
 
   public async handleRvc(audio: any) {
-    const rvcModelName = config("rvc_model_name");
-    const rvcIndexPath = config("rvc_index_path");
-    const rvcF0upKey = parseInt(config("rvc_f0_upkey"));
-    const rvcF0Method = config("rvc_f0_method");
-    const rvcIndexRate = config("rvc_index_rate");
-    const rvcFilterRadius = parseInt(config("rvc_filter_radius"));
-    const rvcResampleSr = parseInt(config("rvc_resample_sr"));
-    const rvcRmsMixRate = parseInt(config("rvc_rms_mix_rate"));
-    const rvcProtect = parseInt(config("rvc_protect"));
+    const rvcModelName = config('rvc_model_name');
+    const rvcIndexPath = config('rvc_index_path');
+    const rvcF0upKey = parseInt(config('rvc_f0_upkey'));
+    const rvcF0Method = config('rvc_f0_method');
+    const rvcIndexRate = config('rvc_index_rate');
+    const rvcFilterRadius = parseInt(config('rvc_filter_radius'));
+    const rvcResampleSr = parseInt(config('rvc_resample_sr'));
+    const rvcRmsMixRate = parseInt(config('rvc_rms_mix_rate'));
+    const rvcProtect = parseInt(config('rvc_protect'));
 
     const voice = await rvc(
       audio,
@@ -157,7 +156,8 @@ export class Chat {
       rvcFilterRadius,
       rvcResampleSr,
       rvcRmsMixRate,
-      rvcProtect);
+      rvcProtect,
+    );
 
     return voice.audio;
   }
@@ -167,8 +167,8 @@ export class Chat {
   }
 
   public handlePoked() {
-    if (!this.isAwake() && config("amica_life_enabled") === "true") {
-      this.receiveMessageFromUser("I just poked you!", true);
+    if (!this.isAwake() && config('amica_life_enabled') === 'true') {
+      this.receiveMessageFromUser('I just poked you!', true);
     }
   }
 
@@ -177,7 +177,7 @@ export class Chat {
   }
 
   public updateAwake() {
-    this.lastAwake = (new Date()).getTime();
+    this.lastAwake = new Date().getTime();
     resetIdleTimer();
   }
 
@@ -185,7 +185,7 @@ export class Chat {
     while (true) {
       do {
         const ttsJob = this.ttsJobs.dequeue();
-        if (! ttsJob) {
+        if (!ttsJob) {
           break;
         }
 
@@ -212,7 +212,7 @@ export class Chat {
     while (true) {
       do {
         const speak = this.speakJobs.dequeue();
-        if (! speak) {
+        if (!speak) {
           break;
         }
         if (speak.streamIdx !== this.currentStreamIdx) {
@@ -221,15 +221,15 @@ export class Chat {
         }
         console.debug('processing speak');
 
-        if((window as any).chatvrm_latency_tracker) {
-          if((window as any).chatvrm_latency_tracker.active) {
-            const ms = +(new Date)-(window as any).chatvrm_latency_tracker.start;
+        if ((window as any).chatvrm_latency_tracker) {
+          if ((window as any).chatvrm_latency_tracker.active) {
+            const ms = +new Date() - (window as any).chatvrm_latency_tracker.start;
             console.log('performance_latency', ms);
             (window as any).chatvrm_latency_tracker.active = false;
-          };
+          }
         }
 
-        this.bubbleMessage("assistant",speak.screenplay.text);
+        this.bubbleMessage('assistant', speak.screenplay.text);
 
         if (speak.audioBuffer) {
           this.setChatSpeaking!(true);
@@ -237,8 +237,7 @@ export class Chat {
           this.setChatSpeaking!(false);
           this.isAwake() ? this.updateAwake() : null;
         }
-        await wait(parseInt(config("amica_sentence_pause")));
-
+        await wait(parseInt(config('amica_sentence_pause')));
       } while (this.speakJobs.size() > 0);
       await wait(50);
     }
@@ -254,11 +253,11 @@ export class Chat {
       }
       this.currentUserMessage += text;
       this.setUserMessage!(this.currentUserMessage);
-      this.setAssistantMessage!("");
+      this.setAssistantMessage!('');
 
       if (this.currentAssistantMessage !== '') {
         this.messageList!.push({
-          role: "assistant",
+          role: 'assistant',
           content: this.currentAssistantMessage,
         });
 
@@ -267,14 +266,18 @@ export class Chat {
 
       this.setChatLog!([
         ...this.messageList!,
-        { role: "user", content: this.currentUserMessage },
+        { role: 'user', content: this.currentUserMessage },
       ]);
     }
 
     if (role === 'assistant') {
-      if (this.currentAssistantMessage != '' && !this.isAwake() && config("amica_life_enabled") === 'true') {
+      if (
+        this.currentAssistantMessage != '' &&
+        !this.isAwake() &&
+        config('amica_life_enabled') === 'true'
+      ) {
         this.messageList!.push({
-          role: "assistant",
+          role: 'assistant',
           content: this.currentAssistantMessage,
         });
 
@@ -282,13 +285,13 @@ export class Chat {
         this.setAssistantMessage!(this.currentAssistantMessage);
       } else {
         this.currentAssistantMessage += text;
-        this.setUserMessage!("");
+        this.setUserMessage!('');
         this.setAssistantMessage!(this.currentAssistantMessage);
       }
 
       if (this.currentUserMessage !== '') {
         this.messageList!.push({
-          role: "user",
+          role: 'user',
           content: this.currentUserMessage,
         });
 
@@ -297,27 +300,27 @@ export class Chat {
 
       this.setChatLog!([
         ...this.messageList!,
-        { role: "assistant", content: this.currentAssistantMessage },
+        { role: 'assistant', content: this.currentAssistantMessage },
       ]);
     }
 
     this.setShownMessage!(role);
-    console.debug('bubbler', this.messageList)
+    console.debug('bubbler', this.messageList);
   }
 
   public async interrupt() {
     this.currentStreamIdx++;
     try {
       if (this.reader) {
-        console.debug('cancelling')
-        if (! this.reader?.closed) {
+        console.debug('cancelling');
+        if (!this.reader?.closed) {
           await this.reader?.cancel();
         }
         // this.reader = null;
         // this.stream = null;
-        console.debug('finished cancelling')
+        console.debug('finished cancelling');
       }
-    } catch(e: any) {
+    } catch (e: any) {
       console.error(e.toString());
     }
 
@@ -329,13 +332,13 @@ export class Chat {
 
   // this happens either from text or from voice / whisper completion
   public async receiveMessageFromUser(message: string, amicaLife: boolean) {
-    if (message === null || message === "") {
+    if (message === null || message === '') {
       return;
     }
 
     console.time('performance_interrupting');
     console.debug('interrupting...');
-    await this.interrupt(); 
+    await this.interrupt();
     console.timeEnd('performance_interrupting');
     await wait(0);
     console.debug('wait complete');
@@ -350,35 +353,34 @@ export class Chat {
       }
 
       this.updateAwake();
-      this.bubbleMessage("user",message);
-    } 
+      this.bubbleMessage('user', message);
+    }
 
     // make new stream
     const messages: Message[] = [
-      { role: "system", content: buildSystemPrompt() },
+      { role: 'system', content: buildSystemPrompt() },
       ...this.messageList!,
-      { role: "user", content: amicaLife ? message : this.currentUserMessage},
+      { role: 'user', content: amicaLife ? message : this.currentUserMessage },
     ];
     // console.debug('messages', messages);
 
     await this.makeAndHandleStream(messages);
   }
 
-
   public async makeAndHandleStream(messages: Message[]) {
     try {
       this.streams.push(await this.getChatResponseStream(messages));
-    } catch(e: any) {
+    } catch (e: any) {
       const errMsg = e.toString();
       console.error(errMsg);
-      this.alert?.error("Failed to get chat response", errMsg);
+      this.alert?.error('Failed to get chat response', errMsg);
       return errMsg;
     }
 
-    if (this.streams[this.streams.length-1] == null) {
-      const errMsg = "Error: Null stream encountered.";
+    if (this.streams[this.streams.length - 1] == null) {
+      const errMsg = 'Error: Null stream encountered.';
       console.error(errMsg);
-      this.alert?.error("Null stream encountered", errMsg);
+      this.alert?.error('Null stream encountered', errMsg);
       return errMsg;
     }
 
@@ -400,10 +402,10 @@ export class Chat {
     this.readers.push(reader);
     let sentences = new Array<string>();
 
-    let aiTextLog = "";
-    let tag = "";
-    let rolePlay = "";
-    let receivedMessage = "";
+    let aiTextLog = '';
+    let tag = '';
+    let rolePlay = '';
+    let receivedMessage = '';
 
     let firstTokenEncountered = false;
     let firstSentenceEncountered = false;
@@ -417,7 +419,7 @@ export class Chat {
           break;
         }
         const { done, value } = await reader.read();
-        if (! firstTokenEncountered) {
+        if (!firstTokenEncountered) {
           console.timeEnd('performance_time_to_first_token');
           firstTokenEncountered = true;
         }
@@ -435,7 +437,12 @@ export class Chat {
           callback: (aiTalks: Screenplay[]): boolean => {
             // Generate & play audio for each sentence, display responses
             console.debug('enqueue tts', aiTalks);
-            console.debug('streamIdx', streamIdx, 'currentStreamIdx', this.currentStreamIdx)
+            console.debug(
+              'streamIdx',
+              streamIdx,
+              'currentStreamIdx',
+              this.currentStreamIdx,
+            );
             if (streamIdx !== this.currentStreamIdx) {
               console.log('wrong stream idx');
               return true; // should break
@@ -445,14 +452,16 @@ export class Chat {
               streamIdx: streamIdx,
             });
 
-            if (! firstSentenceEncountered) {
+            if (!firstSentenceEncountered) {
               console.timeEnd('performance_time_to_first_sentence');
               firstSentenceEncountered = true;
             }
 
             return false; // normal processing
-          }
+          },
         });
+
+        console.log('[message]', 'proc', proc);
 
         sentences = proc.sentences;
         aiTextLog = proc.aiTextLog;
@@ -462,14 +471,13 @@ export class Chat {
         if (proc.shouldBreak) {
           break;
         }
-        
       }
     } catch (e: any) {
       const errMsg = e.toString();
       this.bubbleMessage!('assistant', errMsg);
       console.error(errMsg);
     } finally {
-      if (! reader.closed) {
+      if (!reader.closed) {
         reader.releaseLock();
       }
       console.timeEnd('chat stream processing');
@@ -481,48 +489,58 @@ export class Chat {
     return aiTextLog;
   }
 
-  async fetchAudio(talk: Talk): Promise<ArrayBuffer|null> {
+  async fetchAudio(talk: Talk): Promise<ArrayBuffer | null> {
     // TODO we should remove non-speakable characters
     // since this depends on the tts backend, we should do it
     // in their respective functions
     // this is just a simple solution for now
     talk = cleanTalk(talk);
-    if (talk.message.trim() === '' || config("tts_muted") === 'true') {
+    if (talk.message.trim() === '' || config('tts_muted') === 'true') {
       return null;
     }
 
-    const rvcEnabled = config("rvc_enabled") === 'true';
+    const rvcEnabled = config('rvc_enabled') === 'true';
 
     try {
-      switch (config("tts_backend")) {
+      switch (config('tts_backend')) {
         case 'none': {
           return null;
         }
         case 'elevenlabs': {
-          const voiceId = config("elevenlabs_voiceid");
+          const voiceId = config('elevenlabs_voiceid');
           const voice = await elevenlabs(talk.message, voiceId, talk.style);
-          if (rvcEnabled) { return await this.handleRvc(voice.audio) }
+          if (rvcEnabled) {
+            return await this.handleRvc(voice.audio);
+          }
           return voice.audio;
         }
         case 'speecht5': {
           const speakerEmbeddingUrl = config('speecht5_speaker_embedding_url');
           const voice = await speecht5(talk.message, speakerEmbeddingUrl);
-          if (rvcEnabled) { return await this.handleRvc(voice.audio) }
+          if (rvcEnabled) {
+            return await this.handleRvc(voice.audio);
+          }
           return voice.audio;
         }
         case 'openai_tts': {
           const voice = await openaiTTS(talk.message);
-          if (rvcEnabled) { return await this.handleRvc(voice.audio) }
+          if (rvcEnabled) {
+            return await this.handleRvc(voice.audio);
+          }
           return voice.audio;
         }
         case 'localXTTS': {
           const voice = await localXTTSTTS(talk.message);
-          if (rvcEnabled) { return await this.handleRvc(voice.audio) }
+          if (rvcEnabled) {
+            return await this.handleRvc(voice.audio);
+          }
           return voice.audio;
         }
         case 'piper': {
           const voice = await piper(talk.message);
-          if (rvcEnabled) { return await this.handleRvc(voice.audio) }
+          if (rvcEnabled) {
+            return await this.handleRvc(voice.audio);
+          }
           return voice.audio;
         }
         case 'coquiLocal': {
@@ -532,7 +550,7 @@ export class Chat {
       }
     } catch (e: any) {
       console.error(e.toString());
-      this.alert?.error("Failed to get TTS response", e.toString());
+      this.alert?.error('Failed to get TTS response', e.toString());
     }
 
     return null;
@@ -540,7 +558,7 @@ export class Chat {
 
   public async getChatResponseStream(messages: Message[]) {
     console.debug('getChatResponseStream', messages);
-    const chatbotBackend = config("chatbot_backend");
+    const chatbotBackend = config('chatbot_backend');
 
     switch (chatbotBackend) {
       case 'chatgpt':
@@ -562,16 +580,16 @@ export class Chat {
 
   public async getVisionResponse(imageData: string) {
     try {
-      const visionBackend = config("vision_backend");
+      const visionBackend = config('vision_backend');
 
       console.debug('vision_backend', visionBackend);
 
       const messages: Message[] = [
-        { role: "system", content: config("vision_system_prompt") },
+        { role: 'system', content: config('vision_system_prompt') },
         ...this.messageList!,
         {
           role: 'user',
-          content: "Describe the image as accurately as possible"
+          content: 'Describe the image as accurately as possible',
         },
       ];
 
@@ -586,17 +604,16 @@ export class Chat {
       }
 
       await this.makeAndHandleStream([
-        { role: "system", content: buildSystemPrompt() },
+        { role: 'system', content: buildSystemPrompt() },
         ...this.messageList!,
         {
-          role: "user",
+          role: 'user',
           content: `This is a picture I just took from my webcam (described between [[ and ]] ): [[${res}]] Please respond accordingly and as if it were just sent and as though you can see it.`,
         },
       ]);
     } catch (e: any) {
-      console.error("getVisionResponse", e.toString());
-      this.alert?.error("Failed to get vision response", e.toString());
+      console.error('getVisionResponse', e.toString());
+      this.alert?.error('Failed to get vision response', e.toString());
     }
   }
-
 }

@@ -1,18 +1,22 @@
-import * as ort from "onnxruntime-web"
-ort.env.wasm.wasmPaths = '/_next/static/chunks/'
+import * as ort from 'onnxruntime-web';
+ort.env.wasm.wasmPaths = '/_next/static/chunks/';
 
-import { useContext, useEffect, useRef, useState } from "react";
-import { useMicVAD } from "@ricky0123/vad-react"
-import { IconButton } from "./iconButton";
-import { useTranscriber } from "@/hooks/useTranscriber";
-import { cleanTranscript, cleanFromPunctuation, cleanFromWakeWord } from "@/utils/stringProcessing";
-import { AlertContext } from "@/features/alert/alertContext";
-import { ChatContext } from "@/features/chat/chatContext";
-import { openaiWhisper  } from "@/features/openaiWhisper/openaiWhisper";
-import { whispercpp  } from "@/features/whispercpp/whispercpp";
-import { config } from "@/utils/config";
-import { WaveFile } from "wavefile";
-import { AmicaLifeContext } from "@/features/amicaLife/amicaLifeContext";
+import { useContext, useEffect, useRef, useState } from 'react';
+import { useMicVAD } from '@ricky0123/vad-react';
+import { IconButton } from './iconButton';
+import { useTranscriber } from '@/hooks/useTranscriber';
+import {
+  cleanTranscript,
+  cleanFromPunctuation,
+  cleanFromWakeWord,
+} from '@/utils/stringProcessing';
+import { AlertContext } from '@/features/alert/alertContext';
+import { ChatContext } from '@/features/chat/chatContext';
+import { openaiWhisper } from '@/features/openaiWhisper/openaiWhisper';
+import { whispercpp } from '@/features/whispercpp/whispercpp';
+import { config } from '@/utils/config';
+import { WaveFile } from 'wavefile';
+import { AmicaLifeContext } from '@/features/amicaLife/amicaLifeContext';
 
 export default function MessageInput({
   userMessage,
@@ -51,7 +55,7 @@ export default function MessageInput({
       };
 
       try {
-        switch (config("stt_backend")) {
+        switch (config('stt_backend')) {
           case 'whisper_browser': {
             console.debug('whisper_browser attempt');
             // since VAD sample rate is same as whisper we do nothing here
@@ -66,7 +70,7 @@ export default function MessageInput({
             console.debug('whisper_openai attempt');
             const wav = new WaveFile();
             wav.fromScratch(1, 16000, '32f', audio);
-            const file = new File([wav.toBuffer()], "input.wav", { type: "audio/wav" });
+            const file = new File([wav.toBuffer()], 'input.wav', { type: 'audio/wav' });
 
             let prompt;
             // TODO load prompt if it exists
@@ -87,7 +91,7 @@ export default function MessageInput({
             const wav = new WaveFile();
             wav.fromScratch(1, 16000, '32f', audio);
             wav.toBitDepth('16');
-            const file = new File([wav.toBuffer()], "input.wav", { type: "audio/wav" });
+            const file = new File([wav.toBuffer()], 'input.wav', { type: 'audio/wav' });
 
             let prompt;
             // TODO load prompt if it exists
@@ -117,53 +121,64 @@ export default function MessageInput({
 
   function handleTranscriptionResult(preprocessed: string) {
     const cleanText = cleanTranscript(preprocessed);
-    const wakeWordEnabled = config("wake_word_enabled") === 'true';
-    const textStartsWithWakeWord = wakeWordEnabled && cleanFromPunctuation(cleanText).startsWith(cleanFromPunctuation(config("wake_word")));
-    const text = wakeWordEnabled && textStartsWithWakeWord ? cleanFromWakeWord(cleanText, config("wake_word")) : cleanText;
+    const wakeWordEnabled = config('wake_word_enabled') === 'true';
+    const textStartsWithWakeWord =
+      wakeWordEnabled &&
+      cleanFromPunctuation(cleanText).startsWith(
+        cleanFromPunctuation(config('wake_word')),
+      );
+    const text =
+      wakeWordEnabled && textStartsWithWakeWord
+        ? cleanFromWakeWord(cleanText, config('wake_word'))
+        : cleanText;
 
     if (wakeWordEnabled) {
       // Text start with wake word
       if (textStartsWithWakeWord) {
         // Pause amicaLife and update bot's awake status when speaking
-        if (config("amica_life_enabled") === "true") {
+        if (config('amica_life_enabled') === 'true') {
           amicaLife.pause();
         }
         bot.updateAwake();
-      // Case text doesn't start with wake word and not receive trigger message in amica life
+        // Case text doesn't start with wake word and not receive trigger message in amica life
       } else {
-        if (config("amica_life_enabled") === "true" && amicaLife.triggerMessage !== true && !bot.isAwake()) {
+        if (
+          config('amica_life_enabled') === 'true' &&
+          amicaLife.triggerMessage !== true &&
+          !bot.isAwake()
+        ) {
           bot.updateAwake();
         }
       }
     } else {
       // If wake word off, update bot's awake when speaking
-      if (config("amica_life_enabled") === "true") {
+      if (config('amica_life_enabled') === 'true') {
         amicaLife.pause();
         bot.updateAwake();
       }
     }
 
-
-    if (text === "") {
+    if (text === '') {
       return;
     }
 
-
-    if (config("autosend_from_mic") === 'true') {
+    if (config('autosend_from_mic') === 'true') {
       if (!wakeWordEnabled || bot.isAwake()) {
-        bot.receiveMessageFromUser(text,false);
-      } 
+        bot.receiveMessageFromUser(text, false);
+      }
     } else {
       setUserMessage(text);
     }
     console.timeEnd('performance_transcribe');
   }
 
-  function handleInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    onChangeUserMessage(event); 
-  
+  function handleInputChange(
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) {
+    onChangeUserMessage(event);
+
     // Pause amicaLife and update bot's awake status when typing
-    if (config("amica_life_enabled") === "true") {
+    if (config('amica_life_enabled') === 'true') {
       amicaLife.pause();
       bot.updateAwake();
     }
@@ -171,7 +186,7 @@ export default function MessageInput({
 
   // for whisper_browser
   useEffect(() => {
-    if (transcriber.output && ! transcriber.isBusy) {
+    if (transcriber.output && !transcriber.isBusy) {
       const output = transcriber.output?.text;
       handleTranscriptionResult(output);
     }
@@ -194,24 +209,26 @@ export default function MessageInput({
   }, [whisperCppOutput]);
 
   function clickedSendButton() {
-    bot.receiveMessageFromUser(userMessage,false);
+    bot.receiveMessageFromUser(userMessage, false);
     // only if we are using non-VAD mode should we focus on the input
-    if (! vad.listening) {
+    if (!vad.listening) {
       inputRef.current?.focus();
     }
-    setUserMessage("");
+    setUserMessage('');
   }
 
   return (
     <div className="fixed bottom-2 z-20 w-full">
       <div className="mx-auto max-w-4xl p-2 backdrop-blur-lg border-0 rounded-lg">
         <div className="grid grid-flow-col grid-cols-[min-content_1fr_min-content] gap-[8px]">
-          <div className='flex flex-col justify-center items-center'>
+          <div className="flex flex-col justify-center items-center">
             <IconButton
-              iconName={vad.listening ? "24/PauseAlt" : "24/Microphone"}
+              iconName={vad.listening ? '24/PauseAlt' : '24/Microphone'}
               className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
               isProcessing={vad.userSpeaking}
-              disabled={config('stt_backend') === 'none' || vad.loading || Boolean(vad.errored)}
+              disabled={
+                config('stt_backend') === 'none' || vad.loading || Boolean(vad.errored)
+              }
               onClick={vad.toggle}
             />
           </div>
@@ -222,8 +239,8 @@ export default function MessageInput({
             placeholder="Write message here..."
             onChange={handleInputChange}
             onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                if (userMessage === "") {
+              if (e.key === 'Enter') {
+                if (userMessage === '') {
                   return false;
                 }
 
@@ -231,11 +248,11 @@ export default function MessageInput({
               }
             }}
             disabled={false}
-
             className="disabled block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-400 sm:text-sm sm:leading-6"
-            value={userMessage}></input>
+            value={userMessage}
+          ></input>
 
-          <div className='flex flex-col justify-center items-center'>
+          <div className="flex flex-col justify-center items-center">
             <IconButton
               iconName="24/Send"
               className="ml-2 bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"

@@ -1,19 +1,19 @@
-import { Message } from "@/features/chat/messages";
+import { Message } from '@/features/chat/messages';
 import { config } from '@/utils/config';
-import { buildSystemPrompt } from "@/utils/persona";
+import { buildSystemPrompt } from '@/utils/persona';
 
 export function buildPrompt(messages: Message[]) {
-  let prompt = "";
+  let prompt = '';
   for (let m of messages) {
-    switch(m.role) {
+    switch (m.role) {
       case 'system':
-        prompt += buildSystemPrompt() +"\n\n";
+        prompt += buildSystemPrompt() + '\n\n';
         break;
       case 'user':
         prompt += `User: ${m.content}\n`;
         break;
       case 'assistant':
-        prompt += `${config("name")}: ${m.content}\n`;
+        prompt += `${config('name')}: ${m.content}\n`;
         break;
     }
   }
@@ -22,17 +22,17 @@ export function buildPrompt(messages: Message[]) {
 }
 
 export function buildVisionPrompt(messages: Message[]) {
-  let prompt = "";
+  let prompt = '';
   for (let m of messages) {
-    switch(m.role) {
+    switch (m.role) {
       case 'system':
-        prompt += config("vision_system_prompt")+"\n\n";
+        prompt += config('vision_system_prompt') + '\n\n';
         break;
       case 'user':
         prompt += `User: ${m.content}\n`;
         break;
       case 'assistant':
-        prompt += `${config("name")}: ${m.content}\n`;
+        prompt += `${config('name')}: ${m.content}\n`;
         break;
     }
   }

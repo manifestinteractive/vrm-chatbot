@@ -6,7 +6,7 @@ export function cleanTalk(talk: Talk) {
 
   // symbols & pictographs (1F300–1F5FF)
   talk.message = talk.message.replace(/[\u{1F300}-\u{1F5FF}]/gu, '');
-  
+
   // transport & map symbols (1F680–1F6FF)
   talk.message = talk.message.replace(/[\u{1F680}-\u{1F6FF}]/gu, '');
 
@@ -21,6 +21,9 @@ export function cleanTalk(talk: Talk) {
 
   // Normalize whitespace
   talk.message = talk.message.replace(/\s+/g, ' ');
+
+  // Clean up text
+  talk.message = talk.message.trim();
 
   return talk;
 }

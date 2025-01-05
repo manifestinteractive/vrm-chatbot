@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
-import { buildUrl } from "@/utils/buildUrl";
-import { Html, Head, Main, NextScript } from "next/document";
-import Script from 'next/script'
+import { useEffect, useState } from 'react';
+import { buildUrl } from '@/utils/buildUrl';
+import { Html, Head, Main, NextScript } from 'next/document';
+import Script from 'next/script';
 
 export default function Document() {
-  const title = "Amica - Where Empathy Meets AI";
-  const description = "Amica is your personal 3D companion that can communicate via natural voice chat and vision, with an emotion engine that allows Amica to express feelings, complete tasks and engage on her own.";
-  const imageUrl = "https://amica.arbius.ai/ogp.png";
+  const title = 'Amica - Where Empathy Meets AI';
+  const description =
+    'Amica is your personal 3D companion that can communicate via natural voice chat and vision, with an emotion engine that allows Amica to express feelings, complete tasks and engage on her own.';
+  const imageUrl = 'https://amica.arbius.ai/ogp.png';
 
   return (
     <Html lang="en">
@@ -30,19 +31,12 @@ export default function Document() {
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin=""
-        />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
           href="https://fonts.googleapis.com/css2?family=M+PLUS+2&family=Montserrat&display=swap"
           rel="stylesheet"
         />
-        <Script
-          src="/debugLogger.js"
-          strategy="beforeInteractive"
-        />
+        <Script src="/debugLogger.js" strategy="beforeInteractive" />
       </Head>
       <body>
         <Main />

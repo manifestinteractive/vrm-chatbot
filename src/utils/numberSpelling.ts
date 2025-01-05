@@ -1,5 +1,5 @@
 export function convertNumberToWordsEN(value: number): string {
-  value = Math.floor(value)
+  value = Math.floor(value);
   const ones = [
     '',
     'one',
@@ -20,7 +20,7 @@ export function convertNumberToWordsEN(value: number): string {
     'sixteen',
     'seventeen',
     'eighteen',
-    'nineteen'
+    'nineteen',
   ];
 
   const tens = [
@@ -33,7 +33,7 @@ export function convertNumberToWordsEN(value: number): string {
     'sixty',
     'seventy',
     'eighty',
-    'ninety'
+    'ninety',
   ];
 
   let numString = value.toString();
@@ -55,20 +55,13 @@ export function convertNumberToWordsEN(value: number): string {
   }
 
   if (numString.length === 2) {
-    return (
-      negative +
-      tens[Number(numString[0])] + ' ' +
-      ones[Number(numString[1])]
-    );
+    return negative + tens[Number(numString[0])] + ' ' + ones[Number(numString[1])];
   }
 
   //100 and more
   if (numString.length == 3) {
     if (numString[1] === '0' && numString[2] === '0') {
-      return (
-        negative +
-        ones[Number(numString[0])] + ' hundred'
-      );
+      return negative + ones[Number(numString[0])] + ' hundred';
     } else {
       return (
         negative +
@@ -80,12 +73,9 @@ export function convertNumberToWordsEN(value: number): string {
   }
 
   if (numString.length === 4) {
-    let end = +(numString[1] + numString[2] + numString[3])
+    let end = +(numString[1] + numString[2] + numString[3]);
     if (end === 0) {
-      return (
-        negative +
-        ones[Number(numString[0])] + ' thousand'
-      );
+      return negative + ones[Number(numString[0])] + ' thousand';
     }
     if (end < 100) {
       return (
@@ -97,9 +87,7 @@ export function convertNumberToWordsEN(value: number): string {
     }
 
     return (
-      negative +
-      ones[Number(numString[0])] + ' thousand ' +
-      convertNumberToWordsEN(end)
+      negative + ones[Number(numString[0])] + ' thousand ' + convertNumberToWordsEN(end)
     );
   }
 

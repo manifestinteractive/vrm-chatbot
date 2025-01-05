@@ -1,4 +1,4 @@
-import { Screenplay, textsToScreenplay } from "@/features/chat/messages";
+import { Screenplay, textsToScreenplay } from '@/features/chat/messages';
 
 export type ProcessResponseRetVal = {
   sentences: string[];
@@ -7,7 +7,7 @@ export type ProcessResponseRetVal = {
   tag: string;
   rolePlay: string;
   shouldBreak: boolean;
-}
+};
 
 // this function is used to process the response from the AI
 // it will call callback once it has a full "sentence" to speak
@@ -21,14 +21,16 @@ export function processResponse({
   rolePlay,
   callback,
 }: {
-  sentences: string[],
-  aiTextLog: string,
-  receivedMessage: string,
-  tag: string,
-  rolePlay: string,
-  callback: (aiTalks: Screenplay[]) => boolean,
+  sentences: string[];
+  aiTextLog: string;
+  receivedMessage: string;
+  tag: string;
+  rolePlay: string;
+  callback: (aiTalks: Screenplay[]) => boolean;
 }): ProcessResponseRetVal {
   let shouldBreak = false;
+
+  console.log('[message]', 'tag', tag);
 
   // Detection of tag part of reply content
   const tagMatch = receivedMessage.match(/^\[(.*?)\]/);
@@ -45,21 +47,17 @@ export function processResponse({
   }
 
   // Cut out and process the response sentence by sentence
-  const sentenceMatch = receivedMessage.match(
-    /^(.+[\.\。\!\！\?\？\，\n]|.{10,}[,])/,
-  );
+  const sentenceMatch = receivedMessage.match(/^(.+[\.\。\!\！\?\？\，\n]|.{10,}[,])/);
   if (sentenceMatch && sentenceMatch[0]) {
     const sentence = sentenceMatch[0];
-    sentences.push(sentence);
-    receivedMessage = receivedMessage
-      .slice(sentence.length)
-      .trimStart();
+    sentences.push(sentence.trim());
+    receivedMessage = receivedMessage.slice(sentence.length).trimStart();
 
     // Skip if the string is unnecessary/impossible to utter.
     if (
       !sentence.replace(
         /^[\s\[\(\{「［（【『〈《〔｛«‹〘〚〛〙›»〕》〉』】）］」\}\)\]]+$/g,
-        "",
+        '',
       )
     ) {
       // continue
@@ -70,7 +68,7 @@ export function processResponse({
         tag,
         rolePlay,
         shouldBreak,
-      }
+      };
     }
 
     const aiText = `${tag} ${sentence}`;
@@ -87,5 +85,5 @@ export function processResponse({
     tag,
     rolePlay,
     shouldBreak,
-  }
+  };
 }

@@ -1,9 +1,9 @@
-import { Message } from "./messages";
-import { buildPrompt } from "@/utils/buildPrompt";
+import { Message } from './messages';
+import { buildPrompt } from '@/utils/buildPrompt';
 import { config } from '@/utils/config';
 
 export async function getKoboldAiChatResponseStream(messages: Message[]) {
-  if (config("koboldai_use_extra") === 'true') {
+  if (config('koboldai_use_extra') === 'true') {
     return getExtra(messages);
   } else {
     return getNormal(messages);
@@ -13,30 +13,33 @@ export async function getKoboldAiChatResponseStream(messages: Message[]) {
 // koboldcpp / stream support
 async function getExtra(messages: Message[]) {
   const headers: Record<string, string> = {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   };
   const prompt = buildPrompt(messages);
-  const stop_sequence: string[] = [`${config("name")}:`, ...`${config("koboldai_stop_sequence")}`.split("||")];
+  const stop_sequence: string[] = [
+    `${config('name')}:`,
+    ...`${config('koboldai_stop_sequence')}`.split('||'),
+  ];
 
-  const res = await fetch(`${config("koboldai_url")}/api/extra/generate/stream`, {
+  const res = await fetch(`${config('koboldai_url')}/api/extra/generate/stream`, {
     headers: headers,
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify({
       prompt,
-      stop_sequence
+      stop_sequence,
     }),
   });
 
   const reader = res.body?.getReader();
-  if (res.status !== 200 || ! reader) {
+  if (res.status !== 200 || !reader) {
     throw new Error(`KoboldAi chat error (${res.status})`);
   }
 
   const stream = new ReadableStream({
     async start(controller: ReadableStreamDefaultController) {
-      const decoder = new TextDecoder("utf-8");
+      const decoder = new TextDecoder('utf-8');
       try {
-        let buffer = "";
+        let buffer = '';
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
@@ -55,13 +58,13 @@ async function getExtra(messages: Message[]) {
                   controller.enqueue(messagePiece);
                 }
               } catch (error) {
-                console.error("JSON parsing error:", error, "in line:", line);
+                console.error('JSON parsing error:', error, 'in line:', line);
               }
             }
           }
         }
       } catch (error) {
-        console.error("Stream error:", error);
+        console.error('Stream error:', error);
         controller.error(error);
       } finally {
         reader.releaseLock();
@@ -71,7 +74,7 @@ async function getExtra(messages: Message[]) {
     async cancel() {
       await reader?.cancel();
       reader.releaseLock();
-    }
+    },
   });
 
   return stream;
@@ -80,18 +83,21 @@ async function getExtra(messages: Message[]) {
 // koboldai / no stream support
 async function getNormal(messages: Message[]) {
   const headers: Record<string, string> = {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   };
 
   const prompt = buildPrompt(messages);
-  const stop_sequence: string[] = [`${config("name")}:`, ...`${config("koboldai_stop_sequence")}`.split("||")];
+  const stop_sequence: string[] = [
+    `${config('name')}:`,
+    ...`${config('koboldai_stop_sequence')}`.split('||'),
+  ];
 
-  const res = await fetch(`${config("koboldai_url")}/api/v1/generate`, {
+  const res = await fetch(`${config('koboldai_url')}/api/v1/generate`, {
     headers: headers,
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify({
       prompt,
-      stop_sequence
+      stop_sequence,
     }),
   });
 
@@ -100,14 +106,17 @@ async function getNormal(messages: Message[]) {
     throw new Error(`KoboldAi result length 0`);
   }
 
-  const text = json.results.map((row: {text: string}) => row.text).join('');
+  const text = json.results.map((row: { text: string }) => row.text).join('');
 
   const stream = new ReadableStream({
     async start(controller: ReadableStreamDefaultController) {
       try {
-        text.split(' ').map((word: string) => word + ' ').forEach((word: string) => {
-          controller.enqueue(word);
-        });
+        text
+          .split(' ')
+          .map((word: string) => word + ' ')
+          .forEach((word: string) => {
+            controller.enqueue(word);
+          });
       } catch (error) {
         controller.error(error);
       } finally {
